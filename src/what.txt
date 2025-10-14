@@ -1,0 +1,11 @@
+designer --> imgui blueprint designer
+    takes generator node type and wraps it in a visual node
+    provides a user interface for the generator pretty much
+
+generator --> internal node handler
+    generates code from basic node type
+
+effects --> pre written shader code
+    implementations of generic effect from generator
+    e.g. bloom, color grading, etc.
+    not compiled, just sent to an effects folder on build probably

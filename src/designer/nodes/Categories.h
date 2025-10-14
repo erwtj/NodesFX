@@ -1,0 +1,4 @@
+#ifndef CATEGORIES_H
+#define CATEGORIES_H
+
+#endif //CATEGORIES_H

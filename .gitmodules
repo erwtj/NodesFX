@@ -1,0 +1,9 @@
+[submodule "vendored/SDL"]
+	path = vendored/SDL
+	url = https://github.com/libsdl-org/SDL
+[submodule "vendored/imgui"]
+	path = vendored/imgui
+	url = https://github.com/ocornut/imgui/
+[submodule "vendored/imgui-node-editor"]
+	path = vendored/imgui-node-editor
+	url = https://github.com/erwtj/imgui-node-editor
