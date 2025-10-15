@@ -2,7 +2,6 @@
 #define BLUEPRINT_H
 #include <vector>
 
-#include "VisualNode.h"
 
 
 class Blueprint {
@@ -12,7 +11,6 @@ public:
 
     void Render();
 private:
-    std::vector<VisualNode*> _nodes;
 };
 
 

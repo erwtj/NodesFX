@@ -8,7 +8,6 @@ public:
     VisualNode();
     ~VisualNode();
 private:
-    Node _node;
 };
 
 

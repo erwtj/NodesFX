@@ -1,5 +1,6 @@
 #ifndef IHANDLE_H
 #define IHANDLE_H
+#include <typeinfo>
 
 class IHandle {
 public:
@@ -8,26 +9,17 @@ public:
         Output
     };
 
-    enum class DataType {
-        Float,
-        Vec2,
-        Vec3,
-        Vec4,
-        Color,
-        Texture
-    };
-
-    IHandle(const HandleType type, const DataType dataType) : _type(type), _dataType(dataType) {}
+    explicit IHandle(const HandleType type) : _type(type) {}
     virtual ~IHandle() = default;
 
-    [[nodiscard]] HandleType GetType() const { return _type; }
-    [[nodiscard]] DataType GetDataType() const { return _dataType; }
+    [[nodiscard]] HandleType type() const { return _type; }
+    [[nodiscard]] virtual const std::type_info& dataType() const = 0;
 
-    virtual void Reset() = 0;
+    [[nodiscard]] virtual uint64_t version() = 0;
 
-private:
+protected:
     const HandleType _type;
-    const DataType _dataType;
+    uint64_t _version = 0;
 };
 
 #endif //IHANDLE_H

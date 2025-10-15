@@ -38,26 +38,13 @@ target_link_libraries(imgui_node_editor PRIVATE imgui)
 
 # main executable
 add_executable(${PROJECT_NAME} main.cpp
-        src/generator/Effect.cpp
-        src/generator/Effect.h
-        src/generator/nodes/Node.cpp
         src/generator/nodes/Node.h
-        src/designer/App.cpp
-        src/designer/App.h
-        src/designer/Blueprint.cpp
-        src/designer/Blueprint.h
-        src/designer/nodes/VisualNode.cpp
-        src/designer/nodes/VisualNode.h
-        src/generator/nodes/Handle.h
+        src/generator/nodes/IDataHandle.h
         src/generator/nodes/implementations/AddNode.cpp
         src/generator/nodes/implementations/AddNode.h
         src/designer/nodes/Categories.h
-        src/generator/nodes/implementations/FloatHandle.cpp
-        src/generator/nodes/implementations/FloatHandle.h
         src/generator/nodes/IHandle.h
-        src/generator/nodes/OutputHandle.cpp
         src/generator/nodes/OutputHandle.h
-        src/generator/nodes/InputHandle.cpp
         src/generator/nodes/InputHandle.h
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)

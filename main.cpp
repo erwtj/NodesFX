@@ -8,8 +8,27 @@
 #include <imgui_node_editor.h>
 
 #include "imgui_node_editor_internal.h"
+#include "src/generator/nodes/InputHandle.h"
+#include "src/generator/nodes/Node.h"
+#include "src/generator/nodes/implementations/AddNode.h"
 
 namespace ed = ax::NodeEditor;
+
+/*int main() {
+    AddNode node{};
+    node.setA(10.0f);
+
+    AddNode node2{};
+    node2.setA(5.0f);
+    node2.setB(1.5f);
+
+    node.getInputBHandle()->connect(node2.getOutputHandle());
+
+    node.process();
+    printf("Result: %f\n", node.getResult());
+
+    return 0;
+}*/
 
 int main(int, char**)
 {
