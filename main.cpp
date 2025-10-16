@@ -8,6 +8,7 @@
 #include <imgui_node_editor.h>
 
 #include "imgui_node_editor_internal.h"
+#include "src/designer/nodes/VisualNode.h"
 #include "src/generator/nodes/InputHandle.h"
 #include "src/generator/nodes/Node.h"
 #include "src/generator/nodes/implementations/AddNode.h"
@@ -124,6 +125,9 @@ int main(int, char**)
     // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    AddNode nodeA {};
+    VisualNode vNodeA {&nodeA};
+
     // Main loop
     bool done = false;
     while (!done) {
@@ -168,6 +172,9 @@ int main(int, char**)
             ImGui::Text("Out ->");
             ed::EndPin();
             ed::EndNode();
+
+            vNodeA.render();
+
             ed::End();
             ed::SetCurrentEditor(nullptr);
 

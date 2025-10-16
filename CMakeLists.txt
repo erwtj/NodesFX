@@ -42,10 +42,12 @@ add_executable(${PROJECT_NAME} main.cpp
         src/generator/nodes/IDataHandle.h
         src/generator/nodes/implementations/AddNode.cpp
         src/generator/nodes/implementations/AddNode.h
-        src/designer/nodes/Categories.h
         src/generator/nodes/IHandle.h
         src/generator/nodes/OutputHandle.h
         src/generator/nodes/InputHandle.h
+        src/designer/nodes/Categories.h
+        src/designer/nodes/VisualNode.h
+        src/designer/nodes/VisualNode.cpp
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
 
