@@ -7,18 +7,8 @@
 
 class Node {
 public:
-    // TODO: Kind of isn't needed? This is only a thing for frontend imo
-    enum class NodeType {
-        Input,
-        Output,
-        Effect,
-        Math
-    };
-
-    explicit Node(const NodeType type) : _type(type) {}
+    explicit Node() = default;
     virtual ~Node() = default;
-
-    [[nodiscard]] NodeType type() const { return _type; }
 
     // TODO: Make sure that versions update
     void process() {
@@ -32,8 +22,6 @@ public:
     std::vector<IHandle*> _outputHandles = {};
 
 protected:
-    NodeType _type;
-
     std::vector<uint64_t> _inputVersions = {};
 
     virtual void processInternal() = 0;

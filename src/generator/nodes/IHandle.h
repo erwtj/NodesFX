@@ -17,9 +17,16 @@ public:
 
     [[nodiscard]] virtual uint64_t version() = 0;
 
+    // Unsafe connect, make sure to check canConnect before calling
+    virtual void connect(IHandle &other) = 0;
+    virtual bool canConnect(IHandle &other) = 0;
+
+    // Returns true if connecting to target would create a loop
+    virtual bool checkLoop(IHandle& target) = 0;
 protected:
     const HandleType _type;
     uint64_t _version = 0;
+
 };
 
 #endif //IHANDLE_H

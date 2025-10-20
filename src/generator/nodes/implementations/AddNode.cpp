@@ -1,6 +1,6 @@
 #include "AddNode.h"
 
-AddNode::AddNode() : Node(NodeType::Math) {
+AddNode::AddNode() : Node() {
     _inputHandles.push_back(&inputA);
     _inputHandles.push_back(&inputB);
 

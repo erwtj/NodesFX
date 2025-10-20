@@ -1,5 +1,7 @@
 #ifndef OUTPUTHANDLE_H
 #define OUTPUTHANDLE_H
+#include <unordered_set>
+
 #include "IDataHandle.h"
 #include "IHandle.h"
 #include "Node.h"
@@ -8,12 +10,12 @@
 template <typename T>
 class OutputHandle final : public IDataHandle<T> {
 public:
-    explicit OutputHandle(Node* parent, const T defaultValue)
+    explicit OutputHandle(Node& parent, const T defaultValue)
         : IDataHandle<T>(IHandle::HandleType::Output, defaultValue), _parent(parent) {}
     ~OutputHandle() override = default;
 
     T data() const override {
-        _parent->process();
+        _parent.process();
         return IDataHandle<T>::data();
     }
 
@@ -26,12 +28,39 @@ public:
         // When requesting a version we check versions with dfs, this is done in process.
         // Ff nothing changed, nothing processes meaning our version is correct.
         // Else node will process and call setData which will update our version for us before we can return it.
-        _parent->process();
+        _parent.process();
         return IHandle::_version;
     }
 
+    bool canConnect(IHandle &other) override {
+        // Can only connect to input handles of the same type
+        if (other.type() != IHandle::HandleType::Input)
+            return false;
+
+        if (other.dataType() != typeid(T))
+            return false;
+
+        return other.canConnect(*this);
+    }
+
+    // Unsafe connect, make sure to check canConnect before calling
+    void connect(IHandle &other) override {
+        // Can only connect if other is input, since other is input we let it connect to us
+        other.connect(*this);
+    }
+
+    // Returns true if connecting would create a loop
+    bool checkLoop(IHandle& target) override {
+        for (auto* inputHandle : _parent._inputHandles) {
+            if (inputHandle->checkLoop(target))
+                return true;
+        }
+
+        return false;
+    }
+
 private:
-    Node *_parent = nullptr;
+    Node& _parent;
 };
 
 

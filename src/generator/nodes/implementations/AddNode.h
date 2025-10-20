@@ -21,10 +21,10 @@ protected:
     void processInternal() override;
 
 private:
-    InputHandle<float> inputA{0.0f};
-    InputHandle<float> inputB{0.0f};
+    InputHandle<float> inputA{*this, 0.0f};
+    InputHandle<float> inputB{*this, 0.0f};
 
-    OutputHandle<float> output{this, 0.0f};
+    OutputHandle<float> output{*this, 0.0f};
 };
 
 

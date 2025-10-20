@@ -45,9 +45,17 @@ add_executable(${PROJECT_NAME} main.cpp
         src/generator/nodes/IHandle.h
         src/generator/nodes/OutputHandle.h
         src/generator/nodes/InputHandle.h
-        src/designer/nodes/Categories.h
+        src/designer/nodes/listing/Categories.h
         src/designer/nodes/VisualNode.h
         src/designer/nodes/VisualNode.cpp
+        src/designer/nodes/VisualHandle.cpp
+        src/designer/nodes/VisualHandle.h
+        src/designer/App.cpp
+        src/designer/App.h
+        src/designer/IdManager.h
+        src/designer/nodes/LinkInfo.h
+        src/generator/nodes/implementations/BoolNode.h
+        src/designer/nodes/listing/NodeList.h
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
 

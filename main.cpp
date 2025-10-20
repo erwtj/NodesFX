@@ -8,10 +8,12 @@
 #include <imgui_node_editor.h>
 
 #include "imgui_node_editor_internal.h"
+#include "src/designer/App.h"
 #include "src/designer/nodes/VisualNode.h"
 #include "src/generator/nodes/InputHandle.h"
 #include "src/generator/nodes/Node.h"
 #include "src/generator/nodes/implementations/AddNode.h"
+#include "src/generator/nodes/implementations/BoolNode.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -128,6 +130,27 @@ int main(int, char**)
     AddNode nodeA {};
     VisualNode vNodeA {&nodeA};
 
+    AddNode nodeB {};
+    VisualNode vNodeB {&nodeB};
+
+    BoolNode nodeC {};
+    VisualNode vNodeC {&nodeC};
+
+    BoolNode nodeD {};
+    VisualNode vNodeD {&nodeD};
+
+    App app{};
+    app.addNode(vNodeA);
+    app.addNode(vNodeB);
+    app.addNode(vNodeC);
+    app.addNode(vNodeD);
+
+    for (int i = 0; i < 10; i++) {
+        auto* addNode = new AddNode{};
+        auto* vAddNode = new VisualNode{addNode};
+        app.addNode(*vAddNode);
+    }
+
     // Main loop
     bool done = false;
     while (!done) {
@@ -160,20 +183,8 @@ int main(int, char**)
 
             ed::SetCurrentEditor(edContext);
             ed::Begin("My Editor", ImVec2(0.0, 0.0f));
-            int uniqueId = 1;
-            // Start drawing nodes.
-            ed::BeginNode(uniqueId++);
-            ImGui::Text("Node A");
-            ed::BeginPin(uniqueId++, ed::PinKind::Input);
-            ImGui::Text("-> In");
-            ed::EndPin();
-            ImGui::SameLine();
-            ed::BeginPin(uniqueId++, ed::PinKind::Output);
-            ImGui::Text("Out ->");
-            ed::EndPin();
-            ed::EndNode();
-
-            vNodeA.render();
+            
+            app.update();
 
             ed::End();
             ed::SetCurrentEditor(nullptr);

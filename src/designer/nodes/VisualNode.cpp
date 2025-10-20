@@ -4,17 +4,17 @@
 
 namespace ed = ax::NodeEditor;
 
-VisualNode::VisualNode(const Node *node) : _node(node) {
-    _nodeId = ed::NodeId(reinterpret_cast<uintptr_t>(node));
+VisualNode::VisualNode(const Node *node) : _nodeId(IdManager::nextNodeId()), _node(node) {
+    _inputHandles.reserve(_node->_inputHandles.size());
+    _outputHandles.reserve(_node->_outputHandles.size());
 
-    _inputPins.reserve(_node->_inputHandles.size());
-    _outputPins.reserve(_node->_outputHandles.size());
-
-    for (size_t i = 0; i < _node->_inputHandles.size(); ++i) {
-        _inputPins.push_back(ed::PinId(reinterpret_cast<uintptr_t>(_node->_inputHandles[i])));
+    for (auto _inputHandle : _node->_inputHandles) {
+        VisualHandle handle{_inputHandle};
+        _inputHandles.emplace_back(handle);
     }
-    for (size_t i = 0; i < _node->_outputHandles.size(); ++i) {
-        _outputPins.push_back(ed::PinId(reinterpret_cast<uintptr_t>(_node->_outputHandles[i])));
+    for (auto _outputHandle : _node->_outputHandles) {
+        VisualHandle handle{_outputHandle};
+        _outputHandles.emplace_back(handle);
     }
 }
 
@@ -22,17 +22,14 @@ void VisualNode::render() const {
     ed::BeginNode(_nodeId);
     ImGui::Text("Node A");
 
-    for (int i = 0; i < _node->_inputHandles.size(); ++i) {
-        ed::BeginPin(_inputPins[i], ed::PinKind::Input);
-        ImGui::Text("-> In %d", i);
-        ed::EndPin();
+    for (auto _inputHandle : _inputHandles) {
+        _inputHandle.render();
     }
+
     ImGui::SameLine();
 
-    for (int i = 0; i < _node->_outputHandles.size(); ++i) {
-        ed::BeginPin(_outputPins[i], ed::PinKind::Input);
-        ImGui::Text("-> In %d", i);
-        ed::EndPin();
+    for (auto _outputHandle : _outputHandles) {
+        _outputHandle.render();
     }
 
     ed::EndNode();
