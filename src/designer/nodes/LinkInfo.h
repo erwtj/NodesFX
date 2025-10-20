@@ -2,6 +2,7 @@
 #define LINKINFO_H
 #include "imgui_node_editor.h"
 
+// TODO: On link with same input, replace existing link
 struct LinkInfo {
     ax::NodeEditor::LinkId id;
     ax::NodeEditor::PinId inputPinId;

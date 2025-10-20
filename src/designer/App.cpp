@@ -57,7 +57,25 @@ void App::update() {
 
                         outputHandle.connectTo(inputHandle);
 
-                        _links.push_back({ IdManager::nextLinkId(), inputPinId, outputPinId });
+                        // Actually check which one is input and which one is output
+                        if (inputHandle.getHandle().type() != IHandle::HandleType::Input) {
+                            std::swap(inputPinId, outputPinId);
+                        }
+
+                        int linkIndex = -1;
+                        for (int i = 0; i < _links.size(); i++) {
+                            LinkInfo link = _links[i];
+                            if (link.inputPinId == inputPinId) {
+                                linkIndex = i;
+                                break;
+                            }
+                        }
+
+                        LinkInfo newLink = { IdManager::nextLinkId(), inputPinId, outputPinId };
+                        if (linkIndex != -1)
+                            _links[linkIndex] = newLink;
+                        else
+                            _links.push_back(newLink);
                     }
                 }
             }
