@@ -17,22 +17,14 @@ namespace nodes {
         [[nodiscard]] const char* name() const override { return "Add"; }
         static inline NodeRegistrar<AddNode> registrar{"Math", "Add"};
 
-        void setA(const float a) { inputA.setData(a); }
-        void setB(const float b) { inputB.setData(b); }
-        [[nodiscard]] float getResult() const { return output.data(); }
-
-        InputHandle<float>* getInputAHandle() { return &inputA; }
-        InputHandle<float>* getInputBHandle() { return &inputB; }
-        OutputHandle<float>* getOutputHandle() { return &output; }
-
     protected:
         void processInternal() override;
 
     private:
-        InputHandle<float> inputA{"A", 0.0f};
-        InputHandle<float> inputB{"B", 0.0f};
+        std::shared_ptr<InputHandle<float>> inputA = std::make_shared<InputHandle<float>>("A", 0.0f);
+        std::shared_ptr<InputHandle<float>> inputB = std::make_shared<InputHandle<float>>("B", 0.0f);
 
-        OutputHandle<float> output{"C", *this, 0.0f};
+        std::shared_ptr<OutputHandle<float>> output = std::make_shared<OutputHandle<float>>("C", *this, 0.0f);
     };
 
 }

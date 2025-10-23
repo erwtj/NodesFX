@@ -32,22 +32,22 @@ namespace generator {
             return IHandle::_version;
         }
 
-        bool canConnect(IHandle &other) override {
+        bool canConnect(IHandle* other) override {
             // Can only connect to output handles of the same type
-            if (other.type() != IHandle::HandleType::Output)
+            if (other->type() != IHandle::HandleType::Output)
                 return false;
 
-            if (other.dataType() != typeid(T))
+            if (other->dataType() != typeid(T))
                 return false;
 
-            return !other.checkLoop(*this);
+            return !other->checkLoop(this);
         }
 
         // Unsafe connect, make sure to check canConnect before calling
-        void connect(IHandle &other) override {
+        void connect(IHandle* other) override {
             this->disconnect();
             IHandle::_version++;
-            output = static_cast<OutputHandle<T>*>(&other);
+            output = static_cast<OutputHandle<T>*>(other);
         }
 
         void disconnect() {
@@ -56,12 +56,12 @@ namespace generator {
         }
 
         // Returns true if connecting would create a loop
-        bool checkLoop(IHandle &other) override {
-            if (&other == this)
+        bool checkLoop(IHandle* target) override {
+            if (target == this)
                 return true;
 
             if (output)
-                return output->checkLoop(other);
+                return output->checkLoop(target);
 
             return false;
         }

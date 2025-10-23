@@ -20,8 +20,8 @@ namespace generator {
 
         [[nodiscard]] virtual const char* name() const = 0;
 
-        std::vector<IHandle*> _inputHandles = {};
-        std::vector<IHandle*> _outputHandles = {};
+        std::vector<std::shared_ptr<IHandle>> _inputHandles = {};
+        std::vector<std::shared_ptr<IHandle>> _outputHandles = {};
 
     protected:
         std::vector<uint64_t> _inputVersions = {};
@@ -43,7 +43,7 @@ namespace generator {
         void updateCachedVersions() {
             _inputVersions.resize(_inputHandles.size());
             for (size_t i = 0; i < _inputHandles.size(); ++i) {
-                auto* handle = _inputHandles[i];
+                const auto handle = _inputHandles[i];
                 _inputVersions[i] = handle ? handle->version() : 0;
             }
         }

@@ -10,6 +10,7 @@
 #include "src/designer/nodes/VisualNode.h"
 #include "src/generator/INode.h"
 #include "src/implementations/math/AddNode.h"
+#include "src/implementations/math/SplitVectorNode.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -120,15 +121,10 @@ int main(int, char**)
     // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    nodes::AddNode nodeA {};
-    VisualNode vNodeA {&nodeA};
-
-    nodes::AddNode nodeB {};
-    VisualNode vNodeB {&nodeB};
-
     ProjectWindow app{};
-    app.addNode(vNodeA);
-    app.addNode(vNodeB);
+    app.addNode(VisualNode(std::unique_ptr<INode>{new nodes::AddNode()}));
+    app.addNode(VisualNode(std::unique_ptr<INode>{new nodes::AddNode()}));
+    app.addNode(VisualNode(std::unique_ptr<INode>{new nodes::SplitVectorNode()}));
 
     for (auto& cat : NodeRegistry::categories()) {
         std::cout << "Category: " << cat << "\n";

@@ -5,7 +5,7 @@
 
 #include "imgui_node_editor.h"
 
-
+// TODO: Make thread safe if needed
 class IdManager {
 public:
     static uint64_t nextId() {

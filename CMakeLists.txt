@@ -49,6 +49,11 @@ add_executable(${PROJECT_NAME} main.cpp
         src/implementations/NodeRegistry.h
         src/implementations/math/AddNode.cpp
         src/implementations/math/AddNode.h
+        src/implementations/math/SplitVectorNode.cpp
+        src/implementations/math/SplitVectorNode.h
+
+        # math
+        src/math/Vec4.h
 
         # designer
         src/designer/nodes/VisualNode.h
@@ -61,7 +66,6 @@ add_executable(${PROJECT_NAME} main.cpp
         src/designer/nodes/LinkInfo.h
         src/designer/App.cpp
         src/designer/App.h
-
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
 

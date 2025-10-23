@@ -1,6 +1,7 @@
 #ifndef PROJECTWINDOW_H
 #define PROJECTWINDOW_H
 
+#include "../implementations/NodeRegistry.h"
 #include "nodes/LinkInfo.h"
 #include "nodes/VisualNode.h"
 
@@ -12,7 +13,7 @@ public:
 
     void tick();
 
-    void addNode(const VisualNode &node);
+    void addNode(VisualNode node);
 private:
     bool _firstTime = true;
     bool _openNewNodePopup = false;
@@ -29,11 +30,14 @@ private:
 
     void tickInspector();
     void updateInspector();
-    void drawInspector() const;
+    void drawInspector();
 
-    [[nodiscard]] VisualNode findNodeById(ax::NodeEditor::NodeId nodeId) const;
-    [[nodiscard]] VisualHandle findHandleById(ax::NodeEditor::PinId pinId) const;
+    void drawNodePopup();
 
+    [[nodiscard]] VisualNode* findNodeById(ax::NodeEditor::NodeId nodeId);
+    [[nodiscard]] const VisualHandle& findHandleById(ax::NodeEditor::PinId pinId) const;
+
+    void createNode(const NodeRegistry::Entry& entry);
 };
 
 

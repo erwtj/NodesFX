@@ -4,13 +4,12 @@
 
 namespace ed = ax::NodeEditor;
 
-VisualNode::VisualNode(const generator::INode *node) : _nodeId(IdManager::nextNodeId()), _node(node) {
+VisualNode::VisualNode(std::unique_ptr<INode> node) : _nodeId(IdManager::nextNodeId()), _node(std::move(node)) {
     _inputHandles.reserve(_node->_inputHandles.size());
     _outputHandles.reserve(_node->_outputHandles.size());
 
     for (auto _inputHandle : _node->_inputHandles) {
-        VisualHandle handle{_inputHandle};
-        _inputHandles.emplace_back(handle);
+        _inputHandles.emplace_back(VisualHandle(_inputHandle));
     }
     for (auto _outputHandle : _node->_outputHandles) {
         VisualHandle handle{_outputHandle};
@@ -33,4 +32,9 @@ void VisualNode::draw() const {
     }
 
     ed::EndNode();
+}
+
+VisualNode VisualNode::createFromRegistryEntry(const NodeRegistry::Entry& entry) {
+    std::unique_ptr<INode> node = entry.create();
+    return VisualNode(std::move(node));
 }

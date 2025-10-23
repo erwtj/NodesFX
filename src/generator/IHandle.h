@@ -22,11 +22,11 @@ namespace generator {
         [[nodiscard]] virtual uint64_t version() = 0;
 
         // Unsafe connect, make sure to check canConnect before calling
-        virtual void connect(IHandle &other) = 0;
-        virtual bool canConnect(IHandle &other) = 0;
+        virtual void connect(IHandle* other) = 0;
+        virtual bool canConnect(IHandle* other) = 0;
 
         // Returns true if connecting to target would create a loop
-        virtual bool checkLoop(IHandle& target) = 0;
+        virtual bool checkLoop(IHandle* target) = 0;
     private:
         const char* _name;
     protected:

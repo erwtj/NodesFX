@@ -2,19 +2,18 @@
 
 namespace ed = ax::NodeEditor;
 
-VisualHandle::VisualHandle(generator::IHandle* handle) : _pinId(IdManager::nextPinId()), _handle(handle) {};
+VisualHandle::VisualHandle(const std::shared_ptr<generator::IHandle>& handle) : _pinId(IdManager::nextPinId()), _handle(handle) {};
 
-// TODO: Check not loop
 [[nodiscard]] bool VisualHandle::canConnect(const VisualHandle &other) const {
     if (!_handle || !other._handle)
         return false;
 
-    return _handle->canConnect(other.getHandle());
+    return _handle->canConnect(other.getHandle().get());
 }
 
 void VisualHandle::connectTo(const VisualHandle &other) const {
     if (canConnect(other))
-        _handle->connect(other.getHandle());
+        _handle->connect(other.getHandle().get());
 }
 
 void VisualHandle::draw() const {

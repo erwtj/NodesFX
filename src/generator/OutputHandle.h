@@ -32,26 +32,26 @@ namespace generator {
             return IHandle::_version;
         }
 
-        bool canConnect(IHandle &other) override {
+        bool canConnect(IHandle* other) override {
             // Can only connect to input handles of the same type
-            if (other.type() != IHandle::HandleType::Input)
+            if (other->type() != IHandle::HandleType::Input)
                 return false;
 
-            if (other.dataType() != typeid(T))
+            if (other->dataType() != typeid(T))
                 return false;
 
-            return other.canConnect(*this);
+            return other->canConnect(this);
         }
 
         // Unsafe connect, make sure to check canConnect before calling
-        void connect(IHandle &other) override {
+        void connect(IHandle* other) override {
             // Can only connect if other is input, since other is input we let it connect to us
-            other.connect(*this);
+            other->connect(this);
         }
 
         // Returns true if connecting would create a loop
-        bool checkLoop(IHandle& target) override {
-            for (auto* inputHandle : _parent._inputHandles) {
+        bool checkLoop(IHandle* target) override {
+            for (const auto inputHandle : _parent._inputHandles) {
                 if (inputHandle->checkLoop(target))
                     return true;
             }

@@ -3,6 +3,7 @@
 #include <ranges>
 
 #include "imgui_internal.h"
+#include "../implementations/NodeRegistry.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -12,29 +13,27 @@ ProjectWindow::ProjectWindow() {
     _editorContext = ed::CreateEditor(&config);
 }
 
-void ProjectWindow::addNode(const VisualNode &node) {
-    _nodes.push_back(node);
+void ProjectWindow::addNode(VisualNode node) {
+    _nodes.push_back(std::move(node));
 }
 
-VisualNode ProjectWindow::findNodeById(const ax::NodeEditor::NodeId nodeId) const {
-    for (const auto& node : _nodes) {
-        if (node.getNodeId() == nodeId){
-            return node;
-        }
+VisualNode* ProjectWindow::findNodeById(const ax::NodeEditor::NodeId nodeId) {
+    for (auto& node : _nodes) {
+        if (node.getNodeId() == nodeId)
+            return &node;
     }
-
-    return VisualNode(nullptr); // Return an invalid node if not found
+    return nullptr;
 }
 
-VisualHandle ProjectWindow::findHandleById(const ed::PinId pinId) const {
+const VisualHandle& ProjectWindow::findHandleById(const ed::PinId pinId) const {
     // For simplicity, we assume we have a way to get all nodes
-    for (const auto& node : _nodes) {
-        for (const auto& handle : node.getInputHandles()) {
+    for (auto& node : _nodes) {
+        for (auto& handle : node.getInputHandles()) {
             if (handle.getPinId() == pinId) {
                 return handle;
             }
         }
-        for (const auto& handle : node.getOutputHandles()) {
+        for (auto& handle : node.getOutputHandles()) {
             if (handle.getPinId() == pinId) {
                 return handle;
             }
@@ -57,15 +56,37 @@ void buildDockspace(ImGuiID dockspaceId) {
     ImGui::DockBuilderSetNodeSize(dockspaceId, ImGui::GetMainViewport()->Size);
 
     ImGuiID left_id, right_id;
-    ImGui::DockBuilderSplitNode(dockspaceId, ImGuiDir_Left, 0.5f, &left_id, &right_id);
+    ImGui::DockBuilderSplitNode(dockspaceId, ImGuiDir_Left, 0.75f, &left_id, &right_id);
 
     ImGui::DockBuilderDockWindow("Editor", left_id);
     ImGui::DockBuilderDockWindow("Inspector", right_id);
     ImGui::DockBuilderFinish(dockspaceId);
 }
 
-void drawNodePopup() {
-    ImGui::Text("Node creation is not implemented yet.");
+// Even though this is function is global, you can't switch ProjectWindows while the popup is open, so it's fine (popup is functionally globally static)
+bool newlyOpenedPopup = true;
+char query[256] = "";
+void ProjectWindow::drawNodePopup() {
+    ImGui::Text("Select node...");
+
+    ImGui::Separator();
+    for (const auto& category : NodeRegistry::categories()) {
+        if (ImGui::TreeNode(category.c_str())) {
+            for (const auto& nodeEntry : NodeRegistry::get(category)) {
+                if (ImGui::Selectable(nodeEntry.name.c_str())) {
+                    createNode(nodeEntry);
+                }
+            }
+            ImGui::TreePop();
+        }
+    }
+    ImGui::Separator();
+
+    if (newlyOpenedPopup) {
+        query[0] = '\0';
+        ImGui::SetKeyboardFocusHere();
+    }
+    ImGui::InputText("##Search", &query[0], 256);
 }
 
 void ProjectWindow::tick() {
@@ -88,11 +109,13 @@ void ProjectWindow::tick() {
     // Workaround to get popup rendering ontop of dockspace and editor (since inside causes clipping errors)
     if (_openNewNodePopup) {
         _openNewNodePopup = false;
+        newlyOpenedPopup = true;
         ImGui::OpenPopup("New node");
     }
     if (ImGui::BeginPopup("New node")) {
         drawNodePopup();
         ImGui::EndPopup();
+        newlyOpenedPopup = false;
     }
 
     ImGuiID dockspaceId = ImGui::GetID("EditorDockspace");
@@ -156,7 +179,7 @@ void ProjectWindow::updateEditor() {
                         outputHandle.connectTo(inputHandle);
 
                         // Actually check which one is input and which one is output
-                        if (inputHandle.getHandle().type() != generator::IHandle::HandleType::Input) {
+                        if (inputHandle.getHandle()->type() != generator::IHandle::HandleType::Input) {
                             std::swap(inputPinId, outputPinId);
                         }
 
@@ -201,18 +224,22 @@ void ProjectWindow::tickInspector() {
 void ProjectWindow::updateInspector() {
 }
 
-void ProjectWindow::drawInspector() const {
+void ProjectWindow::drawInspector() {
     ImGui::Begin("Inspector", nullptr, panelFlags);
 
     const ed::NodeId hoveredNodeId = ed::GetHoveredNode();
     if (hoveredNodeId) {
-        VisualNode node = findNodeById(hoveredNodeId);
-        ImGui::Text("%s Node ID: %d", node.getName(), static_cast<int>(node.getNodeId().Get()));
-        ImGui::Text("Input Handles: %d", static_cast<int>(node.getInputHandles().size()));
-        ImGui::Text("Output Handles: %d", static_cast<int>(node.getOutputHandles().size()));
+        VisualNode* node = findNodeById(hoveredNodeId);
+        ImGui::Text("%s Node ID: %d", node->getName(), static_cast<int>(node->getNodeId().Get()));
+        ImGui::Text("Input Handles: %d", static_cast<int>(node->getInputHandles().size()));
+        ImGui::Text("Output Handles: %d", static_cast<int>(node->getOutputHandles().size()));
     } else {
         ImGui::Text("No node selected");
     }
 
     ImGui::End();
+}
+
+void ProjectWindow::createNode(const NodeRegistry::Entry& entry) {
+    addNode(VisualNode::createFromRegistryEntry(entry));
 }
