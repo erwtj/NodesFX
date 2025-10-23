@@ -38,24 +38,30 @@ target_link_libraries(imgui_node_editor PRIVATE imgui)
 
 # main executable
 add_executable(${PROJECT_NAME} main.cpp
-        src/generator/nodes/Node.h
-        src/generator/nodes/IDataHandle.h
-        src/generator/nodes/implementations/AddNode.cpp
-        src/generator/nodes/implementations/AddNode.h
-        src/generator/nodes/IHandle.h
-        src/generator/nodes/OutputHandle.h
-        src/generator/nodes/InputHandle.h
-        src/designer/nodes/listing/Categories.h
+        # generator
+        src/generator/INode.h
+        src/generator/IDataHandle.h
+        src/generator/IHandle.h
+        src/generator/OutputHandle.h
+        src/generator/InputHandle.h
+
+        # implementations
+        src/implementations/NodeRegistry.h
+        src/implementations/math/AddNode.cpp
+        src/implementations/math/AddNode.h
+
+        # designer
         src/designer/nodes/VisualNode.h
         src/designer/nodes/VisualNode.cpp
         src/designer/nodes/VisualHandle.cpp
         src/designer/nodes/VisualHandle.h
-        src/designer/App.cpp
-        src/designer/App.h
+        src/designer/ProjectWindow.cpp
+        src/designer/ProjectWindow.h
         src/designer/IdManager.h
         src/designer/nodes/LinkInfo.h
-        src/generator/nodes/implementations/BoolNode.h
-        src/designer/nodes/listing/NodeList.h
+        src/designer/App.cpp
+        src/designer/App.h
+
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
 

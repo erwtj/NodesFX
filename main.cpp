@@ -5,15 +5,11 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
 
-#include <imgui_node_editor.h>
-
 #include "imgui_node_editor_internal.h"
-#include "src/designer/App.h"
+#include "src/designer/ProjectWindow.h"
 #include "src/designer/nodes/VisualNode.h"
-#include "src/generator/nodes/InputHandle.h"
-#include "src/generator/nodes/Node.h"
-#include "src/generator/nodes/implementations/AddNode.h"
-#include "src/generator/nodes/implementations/BoolNode.h"
+#include "src/generator/INode.h"
+#include "src/implementations/math/AddNode.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -102,6 +98,7 @@ int main(int, char**)
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -119,36 +116,25 @@ int main(int, char**)
     printf("Current path: %s\n", SDL_GetBasePath());
     io.Fonts->AddFontFromFileTTF("./assets/fonts/Roboto-Medium.ttf");
 
-    // Editor settings
-    ed::Config config;
-    config.SettingsFile = "Simple.json";
-    ax::NodeEditor::EditorContext* edContext = ed::CreateEditor(&config);
 
     // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    AddNode nodeA {};
+    nodes::AddNode nodeA {};
     VisualNode vNodeA {&nodeA};
 
-    AddNode nodeB {};
+    nodes::AddNode nodeB {};
     VisualNode vNodeB {&nodeB};
 
-    BoolNode nodeC {};
-    VisualNode vNodeC {&nodeC};
-
-    BoolNode nodeD {};
-    VisualNode vNodeD {&nodeD};
-
-    App app{};
+    ProjectWindow app{};
     app.addNode(vNodeA);
     app.addNode(vNodeB);
-    app.addNode(vNodeC);
-    app.addNode(vNodeD);
 
-    for (int i = 0; i < 10; i++) {
-        auto* addNode = new AddNode{};
-        auto* vAddNode = new VisualNode{addNode};
-        app.addNode(*vAddNode);
+    for (auto& cat : NodeRegistry::categories()) {
+        std::cout << "Category: " << cat << "\n";
+        for (auto& entry : NodeRegistry::get(cat)) {
+            std::cout << "  - " << entry.name << "\n";
+        }
     }
 
     // Main loop
@@ -170,27 +156,11 @@ int main(int, char**)
             continue;
         }
 
-        // Start the Dear ImGui frame
+        // The idea is that anything backend specific is done here, app only knows about ImGui
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL3_NewFrame();
-        ImGui::NewFrame();
 
-        {
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-            ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
-
-            ImGui::Separator();
-
-            ed::SetCurrentEditor(edContext);
-            ed::Begin("My Editor", ImVec2(0.0, 0.0f));
-            
-            app.update();
-
-            ed::End();
-            ed::SetCurrentEditor(nullptr);
-
-            ImGui::End();
-        }
+        app.tick();
 
         // Rendering
         ImGui::Render();

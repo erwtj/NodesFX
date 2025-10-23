@@ -1,6 +1,7 @@
 #include "AddNode.h"
 
-AddNode::AddNode() : Node() {
+using namespace nodes;
+AddNode::AddNode() : INode() {
     _inputHandles.push_back(&inputA);
     _inputHandles.push_back(&inputB);
 

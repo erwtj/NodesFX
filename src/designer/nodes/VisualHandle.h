@@ -2,25 +2,27 @@
 #define VISUALHANDLE_H
 #include "imgui_node_editor.h"
 #include "../IdManager.h"
-#include "../../generator/nodes/IHandle.h"
+#include "../../generator/IHandle.h"
 
 // Pin wrapper
 class VisualHandle {
 public:
-    explicit VisualHandle(IHandle *handle);
+    explicit VisualHandle(generator::IHandle *handle);
     ~VisualHandle() = default;
 
+    const char* getName() const { return _handle->name(); }
+
     [[nodiscard]] ax::NodeEditor::PinId getPinId() const { return _pinId; }
-    [[nodiscard]] IHandle& getHandle() const { return *_handle; }
+    [[nodiscard]] generator::IHandle& getHandle() const { return *_handle; }
 
     [[nodiscard]] bool canConnect(const VisualHandle &other) const;
     void connectTo(const VisualHandle &other) const;
 
-    void render() const;
+    void draw() const;
 
 private:
     const ax::NodeEditor::PinId _pinId;
-    IHandle *_handle = nullptr;
+    generator::IHandle *_handle = nullptr;
 };
 
 
