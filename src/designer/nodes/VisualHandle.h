@@ -4,6 +4,8 @@
 #include "../IdManager.h"
 #include "../../generator/IHandle.h"
 
+#define CIRCLE_RADIUS 6.0f
+
 // Pin wrapper
 class VisualHandle {
 public:
@@ -18,7 +20,7 @@ public:
     [[nodiscard]] bool canConnect(const VisualHandle &other) const;
     void connectTo(const VisualHandle &other) const;
 
-    void draw() const;
+    void draw(float nodeWidth) const;
 
 private:
     const ax::NodeEditor::PinId _pinId;

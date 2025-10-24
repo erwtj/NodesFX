@@ -66,6 +66,8 @@ add_executable(${PROJECT_NAME} main.cpp
         src/designer/nodes/LinkInfo.h
         src/designer/App.cpp
         src/designer/App.h
+        src/implementations/math/SumAndDiffNode.cpp
+        src/implementations/math/SumAndDiffNode.h
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
 

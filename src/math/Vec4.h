@@ -67,6 +67,14 @@ struct Vec4 {
     Vec4 operator*(float scalar) const {
         return Vec4(x * scalar, y * scalar, z * scalar, w * scalar);
     }
+
+    static Vec4 zero() {
+        return Vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    }
+
+    static Vec4 one() {
+        return Vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    }
 };
 
 

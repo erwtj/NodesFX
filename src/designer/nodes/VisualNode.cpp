@@ -8,27 +8,54 @@ VisualNode::VisualNode(std::unique_ptr<INode> node) : _nodeId(IdManager::nextNod
     _inputHandles.reserve(_node->_inputHandles.size());
     _outputHandles.reserve(_node->_outputHandles.size());
 
-    for (auto _inputHandle : _node->_inputHandles) {
-        _inputHandles.emplace_back(VisualHandle(_inputHandle));
+    for (const auto& _inputHandle : _node->_inputHandles) {
+        _inputHandles.emplace_back(_inputHandle);
     }
-    for (auto _outputHandle : _node->_outputHandles) {
-        VisualHandle handle{_outputHandle};
-        _outputHandles.emplace_back(handle);
+    for (const auto& _outputHandle : _node->_outputHandles) {
+        _outputHandles.emplace_back(_outputHandle);
     }
 }
-
 void VisualNode::draw() const {
     ed::BeginNode(_nodeId);
     ImGui::Text("%s", _node->name());
 
-    for (auto _inputHandle : _inputHandles) {
-        _inputHandle.draw();
+    float handleSizeOffset = CIRCLE_RADIUS * 6;
+
+    float largestInputHandleNameWidth = 0.0f;
+    for (const auto& inputHandle : _inputHandles) {
+        float nameWidth = ImGui::CalcTextSize(inputHandle.getName()).x;
+        if (nameWidth > largestInputHandleNameWidth) {
+            largestInputHandleNameWidth = nameWidth + handleSizeOffset;
+        }
     }
 
-    ImGui::SameLine();
+    float largestOutputHandleNameWidth = 0.0f;
+    for (const auto& outputHandle : _outputHandles) {
+        float nameWidth = ImGui::CalcTextSize(outputHandle.getName()).x;
+        if (nameWidth > largestOutputHandleNameWidth) {
+            largestOutputHandleNameWidth = nameWidth + handleSizeOffset;
+        }
+    }
 
-    for (auto _outputHandle : _outputHandles) {
-        _outputHandle.draw();
+    // float handlePadding = ImGui::CalcTextSize(" ").x; // Padding between output and input handles
+    float totalWidth = largestInputHandleNameWidth + largestOutputHandleNameWidth + 5.0f; // 5.0f = handlePadding
+
+    int maxCount = std::max(_inputHandles.size(), _outputHandles.size());
+    for (int i = 0; i < maxCount; i++) {
+        if (i < _inputHandles.size()) {
+            _inputHandles[i].draw(totalWidth);
+        } else {
+            ImGui::Dummy(ImVec2(0, ImGui::GetTextLineHeight()));
+        }
+
+        // ImGui::SameLine(totalWidth / 2);
+        ImGui::SameLine();
+
+        if (i < _outputHandles.size()) {
+            _outputHandles[i].draw(totalWidth);
+        } else {
+            ImGui::Dummy(ImVec2(0, ImGui::GetTextLineHeight()));
+        }
     }
 
     ed::EndNode();
