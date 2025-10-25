@@ -4,7 +4,7 @@
 #include "../NodeRegistry.h"
 #include "../../generator/INode.h"
 #include "../../generator/InputHandle.h"
-#include "../../math/Vec4.h"
+#include "../../util/Vec4.h"
 
 using namespace generator;
 

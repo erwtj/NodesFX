@@ -4,6 +4,7 @@
 
 #include "imgui_internal.h"
 #include "../implementations/NodeRegistry.h"
+#include "../util/TextUtil.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -67,25 +68,39 @@ void buildDockspace(ImGuiID dockspaceId) {
 bool newlyOpenedPopup = true;
 char query[256] = "";
 void ProjectWindow::drawNodePopup() {
+    if (newlyOpenedPopup)
+        query[0] = '\0';
     ImGui::Text("Select node...");
 
     ImGui::Separator();
-    for (const auto& category : NodeRegistry::categories()) {
-        if (ImGui::TreeNode(category.c_str())) {
+    if (query[0] == '\0') { // List all nodes
+        for (const auto& category : NodeRegistry::categories()) {
+            if (ImGui::TreeNode(category.c_str())) {
+                for (const auto& nodeEntry : NodeRegistry::get(category)) {
+                    if (ImGui::Selectable(nodeEntry.name.c_str())) {
+                        createNode(nodeEntry);
+                    }
+                }
+                ImGui::TreePop();
+            }
+        }
+    } else { // Filtered list
+        for (const auto& category : NodeRegistry::categories()) {
             for (const auto& nodeEntry : NodeRegistry::get(category)) {
-                if (ImGui::Selectable(nodeEntry.name.c_str())) {
-                    createNode(nodeEntry);
+                const char* name = nodeEntry.name.c_str();
+                if (containsIgnoreCase(name, query)) {
+                    if (ImGui::Selectable(name)) {
+                        createNode(nodeEntry);
+                    }
                 }
             }
-            ImGui::TreePop();
         }
+
     }
     ImGui::Separator();
 
-    if (newlyOpenedPopup) {
-        query[0] = '\0';
+    if (newlyOpenedPopup)
         ImGui::SetKeyboardFocusHere();
-    }
     ImGui::InputText("##Search", &query[0], 256);
 }
 
