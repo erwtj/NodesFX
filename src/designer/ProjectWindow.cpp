@@ -272,7 +272,7 @@ void ProjectWindow::updateEditor() {
         ed::LinkId linkId;
         while (ed::QueryDeletedLink(&linkId)) {
             if (ed::AcceptDeletedItem()) {
-                const auto it = _links.find(linkId);
+                auto it = _links.find(linkId);
                 if (it != _links.end()) {
                     const LinkInfo& link = it->second;
                     deleteLink(link);
