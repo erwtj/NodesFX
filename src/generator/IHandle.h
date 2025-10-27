@@ -22,6 +22,7 @@ namespace generator {
         [[nodiscard]] virtual uint64_t version() = 0;
 
         // Unsafe connect, make sure to check canConnect before calling
+        virtual void disconnect() = 0;
         virtual void connect(IHandle* other) = 0;
         virtual bool canConnect(IHandle* other) = 0;
 

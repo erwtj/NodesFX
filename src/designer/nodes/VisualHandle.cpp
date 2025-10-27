@@ -2,7 +2,7 @@
 
 namespace ed = ax::NodeEditor;
 
-VisualHandle::VisualHandle(const std::shared_ptr<generator::IHandle>& handle) : _pinId(IdManager::nextPinId()), _handle(handle) {};
+VisualHandle::VisualHandle(const ax::NodeEditor::NodeId nodeId, const std::shared_ptr<generator::IHandle>& handle) : _pinId(IdManager::nextPinId(nodeId)), _handle(handle) {};
 
 [[nodiscard]] bool VisualHandle::canConnect(const VisualHandle &other) const {
     if (!_handle || !other._handle)

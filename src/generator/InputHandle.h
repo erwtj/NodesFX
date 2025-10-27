@@ -50,7 +50,7 @@ namespace generator {
             output = static_cast<OutputHandle<T>*>(other);
         }
 
-        void disconnect() {
+        void disconnect() override {
             IHandle::_version++;
             output = nullptr;
         }

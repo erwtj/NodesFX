@@ -122,9 +122,6 @@ int main(int, char**)
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     ProjectWindow app{};
-    app.addNode(VisualNode(std::unique_ptr<INode>{new nodes::AddNode()}));
-    app.addNode(VisualNode(std::unique_ptr<INode>{new nodes::AddNode()}));
-    app.addNode(VisualNode(std::unique_ptr<INode>{new nodes::SplitVectorNode()}));
 
     for (auto& cat : NodeRegistry::categories()) {
         std::cout << "Category: " << cat << "\n";
@@ -155,6 +152,7 @@ int main(int, char**)
         // The idea is that anything backend specific is done here, app only knows about ImGui
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL3_NewFrame();
+
 
         app.tick();
 

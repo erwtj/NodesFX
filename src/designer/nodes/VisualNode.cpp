@@ -9,10 +9,10 @@ VisualNode::VisualNode(std::unique_ptr<INode> node) : _nodeId(IdManager::nextNod
     _outputHandles.reserve(_node->_outputHandles.size());
 
     for (const auto& _inputHandle : _node->_inputHandles) {
-        _inputHandles.emplace_back(_inputHandle);
+        _inputHandles.emplace_back(_nodeId, _inputHandle);
     }
     for (const auto& _outputHandle : _node->_outputHandles) {
-        _outputHandles.emplace_back(_outputHandle);
+        _outputHandles.emplace_back(_nodeId, _outputHandle);
     }
 }
 void VisualNode::draw() const {
@@ -62,6 +62,5 @@ void VisualNode::draw() const {
 }
 
 VisualNode VisualNode::createFromRegistryEntry(const NodeRegistry::Entry& entry) {
-    std::unique_ptr<INode> node = entry.create();
-    return VisualNode(std::move(node));
+    return VisualNode(entry.create());
 }

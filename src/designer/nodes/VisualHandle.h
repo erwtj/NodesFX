@@ -9,10 +9,10 @@
 // Pin wrapper
 class VisualHandle {
 public:
-    explicit VisualHandle(const std::shared_ptr<generator::IHandle>& handle);
+    explicit VisualHandle(const ax::NodeEditor::NodeId nodeId, const std::shared_ptr<generator::IHandle>& handle);
     ~VisualHandle() = default;
 
-    const char* getName() const { return _handle->name(); }
+    [[nodiscard]] const char* getName() const { return _handle->name(); }
 
     [[nodiscard]] ax::NodeEditor::PinId getPinId() const { return _pinId; }
     [[nodiscard]] std::shared_ptr<generator::IHandle> getHandle() const { return _handle; }

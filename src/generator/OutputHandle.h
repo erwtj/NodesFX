@@ -49,9 +49,13 @@ namespace generator {
             other->connect(this);
         }
 
+        void disconnect() override {
+            throw std::runtime_error("OutputHandle disconnect should not be called directly.");
+        }
+
         // Returns true if connecting would create a loop
         bool checkLoop(IHandle* target) override {
-            for (const auto inputHandle : _parent._inputHandles) {
+            for (const auto& inputHandle : _parent._inputHandles) {
                 if (inputHandle->checkLoop(target))
                     return true;
             }
