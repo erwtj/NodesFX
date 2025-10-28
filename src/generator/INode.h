@@ -27,6 +27,9 @@ namespace generator {
         std::vector<uint64_t> _inputVersions = {};
 
         virtual void processInternal() = 0;
+        [[nodiscard]] virtual bool isDirtyInternal() const {
+            return false;
+        }
 
     private:
         [[nodiscard]] bool isDirty() const {
@@ -37,7 +40,8 @@ namespace generator {
                 if (_inputHandles[i]->version() != _inputVersions[i])
                     return true;
             }
-            return false;
+
+            return isDirtyInternal();
         }
 
         void updateCachedVersions() {

@@ -1,5 +1,8 @@
 #include "VisualNode.h"
 
+#include "../../generator/InputHandle.h"
+#include "../../generator/OutputHandle.h"
+
 #include <imgui_node_editor.h>
 
 namespace ed = ax::NodeEditor;
@@ -39,6 +42,8 @@ void VisualNode::draw() const {
 
     // float handlePadding = ImGui::CalcTextSize(" ").x; // Padding between output and input handles
     float totalWidth = largestInputHandleNameWidth + largestOutputHandleNameWidth + 5.0f; // 5.0f = handlePadding
+    totalWidth = std::max(totalWidth, ImGui::CalcTextSize(_node->name()).x + 20.0f); // Ensure node title fits
+    totalWidth = std::max(totalWidth, 100.0f); // Minimum width
 
     int maxCount = std::max(_inputHandles.size(), _outputHandles.size());
     for (int i = 0; i < maxCount; i++) {
@@ -56,6 +61,24 @@ void VisualNode::draw() const {
         } else {
             ImGui::Dummy(ImVec2(0, ImGui::GetTextLineHeight()));
         }
+    }
+
+    TexData texData;
+    if (!_outputHandles.empty() && _outputHandles[0].getHandle()->dataType() == typeid(TexData)) {
+        auto texDataHandle = std::dynamic_pointer_cast<OutputHandle<TexData>>(_outputHandles[0].getHandle());
+        printf("Attempting to fetch data...");
+        texData = texDataHandle->data();
+        printf("    Success!\n");
+    } else if (_outputHandles.empty() && _inputHandles.size() == 1 && _inputHandles[0].getHandle()->dataType() == typeid(TexData)) {
+        auto texDataHandle = std::dynamic_pointer_cast<InputHandle<TexData>>(_inputHandles[0].getHandle());
+        texData = texDataHandle->data();
+    }
+
+    if (texData.getData() != nullptr) {
+        float aspectRatio = static_cast<float>(texData.getWidth()) / static_cast<float>(texData.getHeight());
+        float displayWidth = totalWidth;
+        float displayHeight = totalWidth / aspectRatio;
+        ImGui::Image(texData.getTextureId(), ImVec2(displayWidth, displayHeight));
     }
 
     ed::EndNode();

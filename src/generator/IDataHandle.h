@@ -1,5 +1,6 @@
 #ifndef HANDLE_H
 #define HANDLE_H
+#include "ColorTraits.h"
 #include "IHandle.h"
 
 namespace generator {
@@ -18,6 +19,11 @@ namespace generator {
         }
 
         [[nodiscard]] const std::type_info& dataType() const override { return typeid(T); }
+
+        // TODO: Kind of weird that this is part of generator
+        [[nodiscard]] ImU32 color() const override {
+            return ColorTraits<T>::color();
+        }
 
     protected:
         const T _defaultValue;

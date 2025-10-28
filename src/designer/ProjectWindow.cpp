@@ -5,6 +5,7 @@
 #include "imgui_internal.h"
 #include "../generator/InputHandle.h"
 #include "../implementations/NodeRegistry.h"
+#include "../util/LoadTexture.h"
 #include "../util/TextUtil.h"
 
 namespace ed = ax::NodeEditor;
@@ -313,8 +314,11 @@ void ProjectWindow::tickInspector() {
 void ProjectWindow::updateInspector() {
 }
 
+TexData testTexData = {};
 void ProjectWindow::drawInspector() {
     ImGui::Begin("Inspector", nullptr, panelFlags);
+
+    ImGui::SeparatorText("Node Info");
 
     if (const ed::NodeId hoveredNodeId = ed::GetHoveredNode()) {
         const VisualNode* node = findNodeById(hoveredNodeId);
@@ -330,6 +334,34 @@ void ProjectWindow::drawInspector() {
     } else {
         ImGui::Text("No node selected");
     }
+
+    ImGui::SeparatorText("Testing");
+
+    auto* textureData = new float[128 * 128 * 4];
+    int width = 128;
+    int height = 128;
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            float r = static_cast<float>(x) / static_cast<float>(width);
+            float g = static_cast<float>(y) / static_cast<float>(height);
+            float b = 0.5f;
+            float a = 1.0f;
+
+            int index = (y * width + x) * 4;
+            textureData[index + 0] = r;
+            textureData[index + 1] = g;
+            textureData[index + 2] = b;
+            textureData[index + 3] = a;
+        }
+    }
+
+    if (testTexData.getData() == nullptr) {
+        testTexData.setData(textureData, width, height);
+    }
+
+    ImGui::Text("pointer = %x", testTexData.getData());
+    ImGui::Text("size = %d x %d", width, height);
+    ImGui::Image(testTexData.getTextureId(), ImVec2(width * 2, height * 2));
 
     ImGui::End();
 }

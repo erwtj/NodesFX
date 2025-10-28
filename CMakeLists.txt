@@ -69,6 +69,13 @@ add_executable(${PROJECT_NAME} main.cpp
         src/implementations/math/SumAndDiffNode.cpp
         src/implementations/math/SumAndDiffNode.h
         src/util/TextUtil.h
+        src/util/TexData.h
+        src/generator/ColorTraits.h
+        src/implementations/effects/BlurNode.cpp
+        src/implementations/effects/BlurNode.h
+        src/util/LoadTexture.h
+        src/implementations/io/SampleTextureNode.cpp
+        src/implementations/io/SampleTextureNode.h
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
 

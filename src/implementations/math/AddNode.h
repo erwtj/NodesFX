@@ -1,6 +1,5 @@
 #ifndef ADDNODE_H
 #define ADDNODE_H
-#include <string>
 
 #include "../NodeRegistry.h"
 #include "../../generator/INode.h"

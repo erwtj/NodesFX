@@ -2,6 +2,8 @@
 #define IHANDLE_H
 #include <typeinfo>
 
+#include "imgui.h"
+
 // TODO: Wrap everything in a namespace
 
 namespace generator {
@@ -28,6 +30,8 @@ namespace generator {
 
         // Returns true if connecting to target would create a loop
         virtual bool checkLoop(IHandle* target) = 0;
+
+        [[nodiscard]] virtual ImU32 color() const = 0;
     private:
         const char* _name;
     protected:
