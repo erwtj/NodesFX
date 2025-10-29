@@ -20,7 +20,7 @@ namespace nodes {
         void processInternal() override;
 
     private:
-        std::shared_ptr<OutputHandle<TexData>> output = std::make_shared<OutputHandle<TexData>>("Sample", *this, TexData());
+        std::shared_ptr<OutputHandle<TexData>> output = std::make_shared<OutputHandle<TexData>>("Sample", this, TexData());
     };
 } // namespace nodes
 

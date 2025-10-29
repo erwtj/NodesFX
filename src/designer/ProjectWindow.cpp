@@ -7,6 +7,7 @@
 #include "../implementations/NodeRegistry.h"
 #include "../util/LoadTexture.h"
 #include "../util/TextUtil.h"
+#include "nodes/implementations/VisualFloatInputNode.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -20,20 +21,21 @@ void ProjectWindow::createNode(const NodeRegistry::Entry& entry, const ImVec2& p
     addNode(VisualNode::createFromRegistryEntry(entry), position);
 }
 
-void ProjectWindow::addNode(VisualNode node, const ImVec2& position) {
-    const ax::NodeEditor::NodeId id = node.getNodeId();
+void ProjectWindow::addNode(std::unique_ptr<IVisualNode> node, const ImVec2& position) {
+    const ax::NodeEditor::NodeId id = node->getNodeId();
     _nodes.insert(std::make_pair(id, std::move(node)));
     ed::SetNodePosition(id, position);
 }
 
-void ProjectWindow::deleteNode(VisualNode& node) {
+void ProjectWindow::deleteNode(const ax::NodeEditor::NodeId& nodeId) {
     // Code is messy but its efficient and prevents errors where you're looping through a list you're deleting from
     std::unordered_set<ax::NodeEditor::PinId> pins = {};
+    const IVisualNode* node = findNodeById(nodeId);
 
-    for (const auto& handle : node.getInputHandles()) {
+    for (const auto& handle : node->getInputHandles()) {
         pins.emplace(handle.getPinId());
     }
-    for (const auto& handle : node.getOutputHandles()) {
+    for (const auto& handle : node->getOutputHandles()) {
         pins.emplace(handle.getPinId());
     }
 
@@ -52,7 +54,7 @@ void ProjectWindow::deleteNode(VisualNode& node) {
         deleteLink(_links.at(linkId));
     }
 
-    _nodes.erase(node.getNodeId());
+    _nodes.erase(node->getNodeId());
 }
 
 void ProjectWindow::deleteLink(const LinkInfo& link) {
@@ -61,21 +63,21 @@ void ProjectWindow::deleteLink(const LinkInfo& link) {
     _links.erase(link.id);
 }
 
-VisualNode* ProjectWindow::findNodeById(const ax::NodeEditor::NodeId nodeId) {
+IVisualNode* ProjectWindow::findNodeById(const ax::NodeEditor::NodeId nodeId) {
     auto it = _nodes.find(nodeId);
     if (it != _nodes.end()) {
-        return &it->second;
+        return it->second.get();
     }
     return nullptr;
 }
 
-VisualNode* ProjectWindow::findNodeByHandleId(const ax::NodeEditor::PinId nodeId) {
+IVisualNode* ProjectWindow::findNodeByHandleId(const ax::NodeEditor::PinId nodeId) {
     const ax::NodeEditor::NodeId parentNodeId = IdManager::nodeIdFromPinId(nodeId);
     return findNodeById(parentNodeId);
 }
 
 const VisualHandle& ProjectWindow::findHandleById(const ed::PinId pinId) {
-    const VisualNode* node = findNodeByHandleId(pinId);
+    const IVisualNode* node = findNodeByHandleId(pinId);
 
     for (auto& handle : node->getInputHandles()) {
         if (handle.getPinId() == pinId) {
@@ -132,6 +134,12 @@ void ProjectWindow::drawNodePopup() {
                 }
                 ImGui::TreePop();
             }
+        }
+        if (ImGui::TreeNode("Custom")) {
+            if (ImGui::Selectable("Float Input")) {
+                addNode(std::make_unique<VisualFloatInputNode>(), popupPos);
+            }
+            ImGui::TreePop();
         }
     } else { // Filtered list
         bool hit = false;
@@ -284,10 +292,8 @@ void ProjectWindow::updateEditor() {
         ed::NodeId nodeId;
         while (ed::QueryDeletedNode(&nodeId))  {
             if (ed::AcceptDeletedItem()) {
-                auto nodeIt = _nodes.find(nodeId);
-                if (nodeIt != _nodes.end()) {
-                    VisualNode& node = nodeIt->second;
-                    deleteNode(node);
+                if (_nodes.contains(nodeId)) {
+                    deleteNode(nodeId);
                 }
             }
         }
@@ -298,7 +304,7 @@ void ProjectWindow::updateEditor() {
 
 void ProjectWindow::drawEditor() const {
     for (const auto& [nodeId, node] : _nodes) {
-        node.draw();
+        node->draw();
     }
 
     for (const auto& [linkId, link] : _links) {
@@ -321,7 +327,7 @@ void ProjectWindow::drawInspector() {
     ImGui::SeparatorText("Node Info");
 
     if (const ed::NodeId hoveredNodeId = ed::GetHoveredNode()) {
-        const VisualNode* node = findNodeById(hoveredNodeId);
+        IVisualNode* node = findNodeById(hoveredNodeId);
         ImGui::Text("%s Node ID: %d", node->getName(), static_cast<int>(node->getNodeId().Get()));
         ImGui::Text("Input Handles:");
         for (const auto& handle : node->getInputHandles()) {
@@ -334,34 +340,6 @@ void ProjectWindow::drawInspector() {
     } else {
         ImGui::Text("No node selected");
     }
-
-    ImGui::SeparatorText("Testing");
-
-    auto* textureData = new float[128 * 128 * 4];
-    int width = 128;
-    int height = 128;
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            float r = static_cast<float>(x) / static_cast<float>(width);
-            float g = static_cast<float>(y) / static_cast<float>(height);
-            float b = 0.5f;
-            float a = 1.0f;
-
-            int index = (y * width + x) * 4;
-            textureData[index + 0] = r;
-            textureData[index + 1] = g;
-            textureData[index + 2] = b;
-            textureData[index + 3] = a;
-        }
-    }
-
-    if (testTexData.getData() == nullptr) {
-        testTexData.setData(textureData, width, height);
-    }
-
-    ImGui::Text("pointer = %x", testTexData.getData());
-    ImGui::Text("size = %d x %d", width, height);
-    ImGui::Image(testTexData.getTextureId(), ImVec2(width * 2, height * 2));
 
     ImGui::End();
 }

@@ -1,5 +1,6 @@
 #ifndef VISUALNODE_H
 #define VISUALNODE_H
+#include "IVisualNode.h"
 #include "imgui_node_editor.h"
 #include "VisualHandle.h"
 #include "../../generator/INode.h"
@@ -7,7 +8,7 @@
 
 
 // Node wrapper
-class VisualNode {
+class VisualNode : public IVisualNode {
 public:
     VisualNode(VisualNode&&) noexcept = default;
     VisualNode& operator=(VisualNode&&) noexcept = delete;
@@ -15,20 +16,18 @@ public:
     VisualNode& operator=(const VisualNode&) = delete;
 
     explicit VisualNode(std::unique_ptr<INode> node);
-    ~VisualNode() = default;
+    ~VisualNode() override = default;
 
-    void draw() const;
+    void draw() override;
 
-    static VisualNode createFromRegistryEntry(const NodeRegistry::Entry& entry);
+    static std::unique_ptr<VisualNode> createFromRegistryEntry(const NodeRegistry::Entry& entry);
 
-    const char* getName() const { return _node->name(); }
+    [[nodiscard]] const char* getName() const override { return _node->name(); }
 
-    [[nodiscard]] const std::vector<VisualHandle>& getInputHandles() const { return _inputHandles; }
-    [[nodiscard]] const std::vector<VisualHandle>& getOutputHandles() const { return _outputHandles; }
+    [[nodiscard]] const std::vector<VisualHandle>& getInputHandles() const override { return _inputHandles; }
+    [[nodiscard]] const std::vector<VisualHandle>& getOutputHandles() const override { return _outputHandles; }
 
-    [[nodiscard]] ax::NodeEditor::NodeId getNodeId() const { return _nodeId; }
-private:
-    const ax::NodeEditor::NodeId _nodeId;
+protected:
     std::unique_ptr<INode> _node;
 
     std::vector<VisualHandle> _inputHandles = {};

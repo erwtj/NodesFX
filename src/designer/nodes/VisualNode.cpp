@@ -7,7 +7,7 @@
 
 namespace ed = ax::NodeEditor;
 
-VisualNode::VisualNode(std::unique_ptr<INode> node) : _nodeId(IdManager::nextNodeId()), _node(std::move(node)) {
+VisualNode::VisualNode(std::unique_ptr<INode> node) : _node(std::move(node)) {
     _inputHandles.reserve(_node->_inputHandles.size());
     _outputHandles.reserve(_node->_outputHandles.size());
 
@@ -18,7 +18,8 @@ VisualNode::VisualNode(std::unique_ptr<INode> node) : _nodeId(IdManager::nextNod
         _outputHandles.emplace_back(_nodeId, _outputHandle);
     }
 }
-void VisualNode::draw() const {
+
+void VisualNode::draw() {
     ed::BeginNode(_nodeId);
     ImGui::Text("%s", _node->name());
 
@@ -66,9 +67,7 @@ void VisualNode::draw() const {
     TexData texData;
     if (!_outputHandles.empty() && _outputHandles[0].getHandle()->dataType() == typeid(TexData)) {
         auto texDataHandle = std::dynamic_pointer_cast<OutputHandle<TexData>>(_outputHandles[0].getHandle());
-        printf("Attempting to fetch data...");
         texData = texDataHandle->data();
-        printf("    Success!\n");
     } else if (_outputHandles.empty() && _inputHandles.size() == 1 && _inputHandles[0].getHandle()->dataType() == typeid(TexData)) {
         auto texDataHandle = std::dynamic_pointer_cast<InputHandle<TexData>>(_inputHandles[0].getHandle());
         texData = texDataHandle->data();
@@ -84,6 +83,6 @@ void VisualNode::draw() const {
     ed::EndNode();
 }
 
-VisualNode VisualNode::createFromRegistryEntry(const NodeRegistry::Entry& entry) {
-    return VisualNode(entry.create());
+std::unique_ptr<VisualNode> VisualNode::createFromRegistryEntry(const NodeRegistry::Entry& entry) {
+    return std::make_unique<VisualNode>(entry.create());
 }

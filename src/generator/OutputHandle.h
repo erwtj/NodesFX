@@ -10,12 +10,12 @@ namespace generator {
     template <typename T>
     class OutputHandle final : public IDataHandle<T> {
     public:
-        explicit OutputHandle(const char* name, INode& parent, const T defaultValue)
+        explicit OutputHandle(const char* name, INode* parent, const T defaultValue)
             : IDataHandle<T>(name, IHandle::HandleType::Output, defaultValue), _parent(parent) {}
         ~OutputHandle() override = default;
 
         T data() const override {
-            _parent.process();
+            _parent->process();
             return IDataHandle<T>::data();
         }
 
@@ -28,7 +28,7 @@ namespace generator {
             // When requesting a version we check versions with dfs, this is done in process.
             // Ff nothing changed, nothing processes meaning our version is correct.
             // Else node will process and call setData which will update our version for us before we can return it.
-            _parent.process();
+            _parent->process();
             return IHandle::_version;
         }
 
@@ -55,7 +55,7 @@ namespace generator {
 
         // Returns true if connecting would create a loop
         bool checkLoop(IHandle* target) override {
-            for (const auto& inputHandle : _parent._inputHandles) {
+            for (const auto& inputHandle : _parent->_inputHandles) {
                 if (inputHandle->checkLoop(target))
                     return true;
             }
@@ -64,7 +64,7 @@ namespace generator {
         }
 
     private:
-        INode& _parent;
+        INode* _parent;
     };
 }
 

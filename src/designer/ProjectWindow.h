@@ -13,16 +13,16 @@ public:
     void tick();
 
     void createNode(const NodeRegistry::Entry& entry, const ImVec2& position = ImVec2(0, 0));
-    void addNode(VisualNode node, const ImVec2& position = ImVec2(0, 0));
+    void addNode(std::unique_ptr<IVisualNode> node, const ImVec2& position = ImVec2(0, 0));
 
-    void deleteNode(VisualNode& node);
+    void deleteNode(const ax::NodeEditor::NodeId& nodeId);
     void deleteLink(const LinkInfo& link);
 private:
     bool _firstTime = true;
     bool _openNewNodePopup = false;
     ax::NodeEditor::EditorContext *_editorContext = nullptr;
 
-    std::unordered_map<ax::NodeEditor::NodeId, VisualNode> _nodes = {};
+    std::unordered_map<ax::NodeEditor::NodeId, std::unique_ptr<IVisualNode>> _nodes = {};
     std::unordered_map<ax::NodeEditor::LinkId, LinkInfo> _links = {};
 
     [[nodiscard]] bool isLinkValid(ax::NodeEditor::PinId inputPinId, ax::NodeEditor::PinId outputPinId);
@@ -37,8 +37,8 @@ private:
 
     void drawNodePopup();
 
-    [[nodiscard]] VisualNode* findNodeById(ax::NodeEditor::NodeId nodeId);
-    [[nodiscard]] VisualNode* findNodeByHandleId(ax::NodeEditor::PinId pinId);
+    [[nodiscard]] IVisualNode* findNodeById(ax::NodeEditor::NodeId nodeId);
+    [[nodiscard]] IVisualNode* findNodeByHandleId(ax::NodeEditor::PinId pinId);
     [[nodiscard]] const VisualHandle& findHandleById(ax::NodeEditor::PinId pinId);
 };
 

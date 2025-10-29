@@ -21,7 +21,7 @@ namespace nodes {
         std::shared_ptr<InputHandle<TexData>> inputTex = std::make_shared<InputHandle<TexData>>("Texture", TexData());
         std::shared_ptr<InputHandle<float>> radius = std::make_shared<InputHandle<float>>("Radius", 50.0f);
 
-        std::shared_ptr<OutputHandle<TexData>> outputTex = std::make_shared<OutputHandle<TexData>>("Blurred", *this, TexData());
+        std::shared_ptr<OutputHandle<TexData>> outputTex = std::make_shared<OutputHandle<TexData>>("Blurred", this, TexData());
     };
 
 }

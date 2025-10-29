@@ -44,6 +44,7 @@ add_executable(${PROJECT_NAME} main.cpp
         src/generator/IHandle.h
         src/generator/OutputHandle.h
         src/generator/InputHandle.h
+        src/generator/ColorTraits.h
 
         # implementations
         src/implementations/NodeRegistry.h
@@ -51,31 +52,37 @@ add_executable(${PROJECT_NAME} main.cpp
         src/implementations/math/AddNode.h
         src/implementations/math/SplitVectorNode.cpp
         src/implementations/math/SplitVectorNode.h
+        src/implementations/effects/BlurNode.cpp
+        src/implementations/effects/BlurNode.h
+        src/implementations/io/SampleTextureNode.cpp
+        src/implementations/io/SampleTextureNode.h
+        src/implementations/io/LoadTextureNode.cpp
+        src/implementations/io/LoadTextureNode.h
+        src/implementations/input/FloatInputNode.cpp
+        src/implementations/input/FloatInputNode.h
+        src/implementations/math/SumAndDiffNode.cpp
+        src/implementations/math/SumAndDiffNode.h
 
         # math
         src/util/Vec4.h
+        src/util/LoadTexture.h
+        src/util/TextUtil.h
+        src/util/TexData.h
 
         # designer
+        src/designer/nodes/IVisualNode.h
         src/designer/nodes/VisualNode.h
         src/designer/nodes/VisualNode.cpp
         src/designer/nodes/VisualHandle.cpp
         src/designer/nodes/VisualHandle.h
+        src/designer/nodes/implementations/VisualFloatInputNode.cpp
+        src/designer/nodes/implementations/VisualFloatInputNode.h
         src/designer/ProjectWindow.cpp
         src/designer/ProjectWindow.h
         src/designer/IdManager.h
         src/designer/nodes/LinkInfo.h
         src/designer/App.cpp
         src/designer/App.h
-        src/implementations/math/SumAndDiffNode.cpp
-        src/implementations/math/SumAndDiffNode.h
-        src/util/TextUtil.h
-        src/util/TexData.h
-        src/generator/ColorTraits.h
-        src/implementations/effects/BlurNode.cpp
-        src/implementations/effects/BlurNode.h
-        src/util/LoadTexture.h
-        src/implementations/io/SampleTextureNode.cpp
-        src/implementations/io/SampleTextureNode.h
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
 

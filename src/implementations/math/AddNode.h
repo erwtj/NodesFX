@@ -23,7 +23,7 @@ namespace nodes {
         std::shared_ptr<InputHandle<float>> inputA = std::make_shared<InputHandle<float>>("A", 0.0f);
         std::shared_ptr<InputHandle<float>> inputB = std::make_shared<InputHandle<float>>("B", 0.0f);
 
-        std::shared_ptr<OutputHandle<float>> output = std::make_shared<OutputHandle<float>>("C", *this, 0.0f);
+        std::shared_ptr<OutputHandle<float>> output = std::make_shared<OutputHandle<float>>("C", this, 0.0f);
     };
 
 }
