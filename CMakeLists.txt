@@ -75,14 +75,15 @@ add_executable(${PROJECT_NAME} main.cpp
         src/designer/nodes/VisualNode.cpp
         src/designer/nodes/VisualHandle.cpp
         src/designer/nodes/VisualHandle.h
-        src/designer/nodes/implementations/VisualFloatInputNode.cpp
-        src/designer/nodes/implementations/VisualFloatInputNode.h
         src/designer/ProjectWindow.cpp
         src/designer/ProjectWindow.h
         src/designer/IdManager.h
         src/designer/nodes/LinkInfo.h
         src/designer/App.cpp
         src/designer/App.h
+        src/designer/nodes/input/VisualInputNode.h
+        src/designer/nodes/input/InputTraits.h
+        src/designer/nodes/input/InputNode.h
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
 

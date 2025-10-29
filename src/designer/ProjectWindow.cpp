@@ -5,9 +5,8 @@
 #include "imgui_internal.h"
 #include "../generator/InputHandle.h"
 #include "../implementations/NodeRegistry.h"
-#include "../util/LoadTexture.h"
 #include "../util/TextUtil.h"
-#include "nodes/implementations/VisualFloatInputNode.h"
+#include "nodes/input/VisualInputNode.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -135,9 +134,19 @@ void ProjectWindow::drawNodePopup() {
                 ImGui::TreePop();
             }
         }
-        if (ImGui::TreeNode("Custom")) {
+        if (ImGui::TreeNode("Inputs")) {
+            // TODO: Get this from registry?
+            if (ImGui::Selectable("Int Input")) {
+                addNode(std::make_unique<VisualInputNode<int>>(), popupPos);
+            }
             if (ImGui::Selectable("Float Input")) {
-                addNode(std::make_unique<VisualFloatInputNode>(), popupPos);
+                addNode(std::make_unique<VisualInputNode<float>>(), popupPos);
+            }
+            if (ImGui::Selectable("Bool Input")) {
+                addNode(std::make_unique<VisualInputNode<bool>>(), popupPos);
+            }
+            if (ImGui::Selectable("Vec4 Input")) {
+                addNode(std::make_unique<VisualInputNode<Vec4>>(), popupPos);
             }
             ImGui::TreePop();
         }
