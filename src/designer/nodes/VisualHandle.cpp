@@ -33,9 +33,8 @@ void VisualHandle::draw(float nodeWidth) const {
         drawHandleCircle(CIRCLE_RADIUS, _handle->color());
         ed::BeginPin(_pinId, ed::PinKind::Input); // put pin around circle
         ImGui::Dummy(ImVec2(CIRCLE_RADIUS * 3, ImGui::GetTextLineHeight())); // spacing for pin
-        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
-        {
-            ImGui::SetTooltip(_handle->dataTypeName().c_str());
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+            ImGui::SetTooltip("%s (%s)", _handle->dataTypeName().c_str(), _handle->dataToString().c_str());
         }
         ed::EndPin();
 
@@ -49,14 +48,9 @@ void VisualHandle::draw(float nodeWidth) const {
 
         drawHandleCircle(CIRCLE_RADIUS, _handle->color());
         ed::BeginPin(_pinId, ed::PinKind::Output); // put pin around circle
-        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
-        {
-            ImGui::SetTooltip(_handle->dataTypeName().c_str());
-        }
         ImGui::Dummy(ImVec2(CIRCLE_RADIUS * 3, ImGui::GetTextLineHeight())); // spacing for pin
-        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
-        {
-            ImGui::SetTooltip(_handle->dataTypeName().c_str());
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+            ImGui::SetTooltip("%s (%s)", _handle->dataTypeName().c_str(), _handle->dataToString().c_str());
         }
         ed::EndPin();
     }

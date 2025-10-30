@@ -99,19 +99,6 @@ bool ProjectWindow::isLinkValid(const ed::PinId inputPinId, const ed::PinId outp
     return inputHandle.canConnect(outputHandle);
 }
 
-void buildDockspace(ImGuiID dockspaceId) {
-    ImGui::DockBuilderRemoveNode(dockspaceId);
-    ImGui::DockBuilderAddNode(dockspaceId, ImGuiDockNodeFlags_DockSpace);
-    ImGui::DockBuilderSetNodeSize(dockspaceId, ImGui::GetMainViewport()->Size);
-
-    ImGuiID left_id, right_id;
-    ImGui::DockBuilderSplitNode(dockspaceId, ImGuiDir_Left, 0.75f, &left_id, &right_id);
-
-    ImGui::DockBuilderDockWindow("Editor", left_id);
-    ImGui::DockBuilderDockWindow("Inspector", right_id);
-    ImGui::DockBuilderFinish(dockspaceId);
-}
-
 // Even though this is function is global, you can't switch ProjectWindows while the popup is open, so it's fine (popup is functionally globally static)
 char query[256] = "";
 void ProjectWindow::drawNodePopup() {
@@ -177,25 +164,13 @@ void ProjectWindow::drawNodePopup() {
     ImGui::InputText("##Search", &query[0], 256);
 }
 
+
 void ProjectWindow::tick() {
     // Start
     ImGui::NewFrame();
 
     ed::SetCurrentEditor(_editorContext);
 
-    // auto& io = ImGui::GetIO();
-    // ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-    // ImGui::SetNextWindowSize(io.DisplaySize);
-    //
-    // ImGui::Begin("##EditorMainWindow", nullptr,
-    //     ImGuiWindowFlags_NoTitleBar |
-    //     ImGuiWindowFlags_NoCollapse |
-    //     ImGuiWindowFlags_NoResize |
-    //     ImGuiWindowFlags_NoMove |
-    //     ImGuiWindowFlags_NoBringToFrontOnFocus |
-    //     ImGuiWindowFlags_NoNavFocus);
-
-    // Workaround to get popup rendering ontop of dockspace and editor (since inside causes clipping errors)
     if (_openNewNodePopup) {
         ImGui::OpenPopup("New node");
     }
@@ -205,41 +180,55 @@ void ProjectWindow::tick() {
         _openNewNodePopup = false;
     }
 
-    ImGuiID dockspaceId = ImGui::GetID("EditorDockspace");
-    // ImGui::DockSpace(dockspaceId, ImVec2(0.0f, 0.0f),
-    //     ImGuiDockNodeFlags_NoDockingInCentralNode |
-    //     ImGuiDockNodeFlags_PassthruCentralNode);
+    // Get main viewport (to know the window’s screen space)
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
 
-    if (_firstTime) {
-        _firstTime = false;
-        buildDockspace(dockspaceId);
-    }
+    // Define total area and split ratio
+    const float total_width = viewport->Size.x;
+    const float total_height = viewport->Size.y;
 
-    ImGui::Begin("Hello world!");
+    const float split_ratio = 0.7f;
+    const float left_width = total_width * split_ratio;
+    const float right_width = total_width - left_width;
+
+    // === LEFT WINDOW ===
+    ImGui::SetNextWindowPos(viewport->Pos);
+    ImGui::SetNextWindowSize(ImVec2(left_width, total_height));
+
+    ImGui::Begin("Editor", nullptr,
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoBringToFrontOnFocus);
+
     tickEditor();
     ImGui::End();
+
+    // === RIGHT WINDOW ===
+    ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + left_width, viewport->Pos.y));
+    ImGui::SetNextWindowSize(ImVec2(right_width, total_height));
+
+    ImGui::Begin("Inspector", nullptr,
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoBringToFrontOnFocus);
+
     tickInspector();
+    ImGui::End();
 
     // End
-    // ImGui::End();
     ed::SetCurrentEditor(nullptr);
     ImGui::Render();
 }
 
-// ImGuiWindowFlags panelFlags = ImGuiWindowFlags_NoCollapse |
-//                               ImGuiWindowFlags_NoMove |
-//                               ImGuiWindowFlags_NoResize;
-
-ImGuiWindowFlags panelFlags = ImGuiWindowFlags_None;
 void ProjectWindow::tickEditor() {
-    ImGui::Begin("Editor", nullptr, panelFlags);
     ed::Begin("MyEditor", ImVec2(0.0, 0.0f));
 
     updateEditor();
     drawEditor();
 
     ed::End();
-    ImGui::End();
 }
 
 void ProjectWindow::updateEditor() {
@@ -338,8 +327,6 @@ void ProjectWindow::updateInspector() {
 
 TexData testTexData = {};
 void ProjectWindow::drawInspector() {
-    ImGui::Begin("Inspector", nullptr, panelFlags);
-
     ImGui::SeparatorText("Node Info");
 
     if (const ed::NodeId hoveredNodeId = ed::GetHoveredNode()) {
@@ -347,11 +334,11 @@ void ProjectWindow::drawInspector() {
         ImGui::Text("%s Node ID: %d", node->getName(), static_cast<int>(node->getNodeId().Get()));
         ImGui::Text("Input Handles:");
         for (const auto& handle : node->getInputHandles()) {
-            ImGui::Text(" - %s", handle.getName());
+            ImGui::Text(" - %s (%s)", handle.getName(), handle.getHandle()->dataToString().c_str());
         }
         ImGui::Text("Output Handles:");
         for (const auto& handle : node->getOutputHandles()) {
-            ImGui::Text(" - %s", handle.getName());
+            ImGui::Text(" - %s (%s)", handle.getName(), handle.getHandle()->dataToString().c_str());
         }
     } else {
         ImGui::Text("No node selected");
@@ -362,7 +349,5 @@ void ProjectWindow::drawInspector() {
     if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
         ImGui::SetTooltip("Hello!");
     }
-
-    ImGui::End();
 }
 
