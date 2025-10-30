@@ -1,7 +1,7 @@
 #include "VisualHandle.h"
 
 #include "../../util/TexData.h"
-#include "../../util/Vec4.h"
+#include "../../util/Vec.h"
 
 namespace ed = ax::NodeEditor;
 

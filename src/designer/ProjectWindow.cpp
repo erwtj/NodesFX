@@ -6,7 +6,7 @@
 #include "../generator/InputHandle.h"
 #include "../implementations/NodeRegistry.h"
 #include "../util/TextUtil.h"
-#include "nodes/input/VisualInputNode.h"
+#include "nodes/input/InputNodeRegistry.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -135,18 +135,10 @@ void ProjectWindow::drawNodePopup() {
             }
         }
         if (ImGui::TreeNode("Inputs")) {
-            // TODO: Get this from registry?
-            if (ImGui::Selectable("Int Input")) {
-                addNode(std::make_unique<VisualInputNode<int>>(), popupPos);
-            }
-            if (ImGui::Selectable("Float Input")) {
-                addNode(std::make_unique<VisualInputNode<float>>(), popupPos);
-            }
-            if (ImGui::Selectable("Bool Input")) {
-                addNode(std::make_unique<VisualInputNode<bool>>(), popupPos);
-            }
-            if (ImGui::Selectable("Vec4 Input")) {
-                addNode(std::make_unique<VisualInputNode<Vec4>>(), popupPos);
+            for (const auto& inputNodeEntry : InputNodeRegistry::entries()) {
+                if (ImGui::Selectable(inputNodeEntry.name.c_str())) {
+                    addNode(inputNodeEntry.create(), popupPos);
+                }
             }
             ImGui::TreePop();
         }
@@ -161,6 +153,16 @@ void ProjectWindow::drawNodePopup() {
                     }
                     hit = true;
                 }
+            }
+        }
+
+        for (const auto& inputNodeEntry : InputNodeRegistry::entries()) {
+            const char* name = inputNodeEntry.name.c_str();
+            if (containsIgnoreCase(name, query)) {
+                if (ImGui::Selectable(name)) {
+                    addNode(inputNodeEntry.create(), popupPos);
+                }
+                hit = true;
             }
         }
 

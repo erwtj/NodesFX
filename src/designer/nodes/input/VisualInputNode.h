@@ -1,7 +1,9 @@
 #ifndef VISUALINPUTNODE_H
 #define VISUALINPUTNODE_H
 
+#include "InputTraits.h"
 #include "InputNode.h"
+#include "InputNodeRegistry.h"
 #include "../VisualNode.h"
 #include "../../../generator/OutputHandle.h"
 #include "../../../implementations/math/AddNode.h"
@@ -13,6 +15,8 @@ public:
         _outputHandle = std::dynamic_pointer_cast<OutputHandle<T>>(_node->_outputHandles[0]);
     }
 
+    static inline InputNodeRegistrar<VisualInputNode<T>> registrar{InputTraits<T>::name};
+
     void draw() override {
         namespace ed = ax::NodeEditor;
         ed::BeginNode(_nodeId);
@@ -20,8 +24,7 @@ public:
         ImGui::Text("%s", InputTraits<T>::name);
 
         float handleSizeOffset = CIRCLE_RADIUS * 6;
-        float totalWidth = ImGui::CalcTextSize(_outputHandle->name()).x + handleSizeOffset;
-        totalWidth = std::max(totalWidth, ImGui::CalcTextSize(InputTraits<T>::name).x + 20.0f);
+        float totalWidth = std::max(ImGui::CalcTextSize(_outputHandle->name()).x, InputTraits<T>::width) + handleSizeOffset + 20.0f;
         totalWidth = std::max(totalWidth, 100.0f);
 
         T value = _outputHandle->data();

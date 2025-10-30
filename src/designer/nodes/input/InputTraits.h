@@ -1,6 +1,9 @@
 #ifndef INPUTMAKER_H
 #define INPUTMAKER_H
-#include "../../../generator/OutputHandle.h"
+
+#include "imgui.h"
+#include "../../../util/Vec.h"
+#include "../../../util/Color.h"
 
 template<typename T>
 struct InputTraits;
@@ -8,15 +11,17 @@ struct InputTraits;
 template<>
 struct InputTraits<int> {
     static constexpr const char* name = "Integer";
+    static constexpr float width = 25;
     static constexpr int defaultValue() { return 0; }
     static bool drawWidget(const char* label, int& value) {
-        return ImGui::InputInt(label, &value);
+        return ImGui::InputInt(label, &value, 0, 0, ImGuiInputTextFlags_None);
     }
 };
 
 template<>
 struct InputTraits<float> {
     static constexpr const char* name = "Float";
+    static constexpr float width = 25;
     static constexpr float defaultValue() { return 0.0f; }
     static bool drawWidget(const char* label, float& value) {
         return ImGui::InputFloat(label, &value);
@@ -26,6 +31,7 @@ struct InputTraits<float> {
 template<>
 struct InputTraits<bool> {
     static constexpr const char* name = "Boolean";
+    static constexpr float width = 15;
     static constexpr bool defaultValue() { return false; }
     static bool drawWidget(const char* label, bool& value) {
         return ImGui::Checkbox(label, &value);
@@ -33,14 +39,44 @@ struct InputTraits<bool> {
 };
 
 template<>
-struct InputTraits<Vec4> {
+struct InputTraits<Vec<4>> {
     static constexpr const char* name = "Vec4";
-    static Vec4 defaultValue() { return Vec4(); }
-    static bool drawWidget(const char* label, Vec4& value) {
+    static constexpr float width = 180;
+    static Vec<4> defaultValue() { return Vec<4>(); }
+    static bool drawWidget(const char* label, Vec<4>& value) {
         return ImGui::InputFloat4(label, &value.x);
     }
 };
 
+template<>
+struct InputTraits<Vec<3>> {
+    static constexpr const char* name = "Vec3";
+    static constexpr float width = 150;
+    static Vec<3> defaultValue() { return Vec<3>(); }
+    static bool drawWidget(const char* label, Vec<3>& value) {
+        return ImGui::InputFloat3(label, &value.x);
+    }
+};
+
+template<>
+struct InputTraits<Vec<2>> {
+    static constexpr const char* name = "Vec2";
+    static constexpr float width = 120;
+    static Vec<2> defaultValue() { return Vec<2>(); }
+    static bool drawWidget(const char* label, Vec<2>& value) {
+        return ImGui::InputFloat2(label, &value.x);
+    }
+};
+
+template<>
+struct InputTraits<Color> {
+    static constexpr const char* name = "Color";
+    static constexpr float width = 150;
+    static Color defaultValue() { return Color(); }
+    static bool drawWidget(const char* label, Color& value) {
+        return ImGui::ColorEdit4(label, &value.r);
+    }
+};
 
 
 #endif //INPUTMAKER_H

@@ -6,7 +6,7 @@ using namespace nodes;
 
 SampleTextureNode::SampleTextureNode() : INode() {
     _outputHandles.push_back(output);
-    processInternal();
+    SampleTextureNode::processInternal();
 }
 
 void SampleTextureNode::processInternal() {

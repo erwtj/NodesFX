@@ -50,40 +50,43 @@ add_executable(${PROJECT_NAME} main.cpp
         src/implementations/NodeRegistry.h
         src/implementations/math/AddNode.cpp
         src/implementations/math/AddNode.h
-        src/implementations/math/SplitVectorNode.cpp
         src/implementations/math/SplitVectorNode.h
+        src/implementations/math/SplitVectorNode.cpp
+        src/implementations/effects/SolidColorNode.cpp
+        src/implementations/effects/SolidColorNode.h
         src/implementations/effects/BlurNode.cpp
         src/implementations/effects/BlurNode.h
         src/implementations/io/SampleTextureNode.cpp
         src/implementations/io/SampleTextureNode.h
         src/implementations/io/LoadTextureNode.cpp
         src/implementations/io/LoadTextureNode.h
-        src/implementations/input/FloatInputNode.cpp
-        src/implementations/input/FloatInputNode.h
-        src/implementations/math/SumAndDiffNode.cpp
-        src/implementations/math/SumAndDiffNode.h
 
-        # math
-        src/util/Vec4.h
+        # util
         src/util/LoadTexture.h
+        src/util/Vec.h
         src/util/TextUtil.h
         src/util/TexData.h
+        src/util/Color.h
 
         # designer
-        src/designer/nodes/IVisualNode.h
-        src/designer/nodes/VisualNode.h
-        src/designer/nodes/VisualNode.cpp
-        src/designer/nodes/VisualHandle.cpp
-        src/designer/nodes/VisualHandle.h
         src/designer/ProjectWindow.cpp
         src/designer/ProjectWindow.h
         src/designer/IdManager.h
         src/designer/nodes/LinkInfo.h
         src/designer/App.cpp
         src/designer/App.h
-        src/designer/nodes/input/VisualInputNode.h
-        src/designer/nodes/input/InputTraits.h
-        src/designer/nodes/input/InputNode.h
+            # designer/nodes
+            src/designer/nodes/IVisualNode.h
+            src/designer/nodes/VisualNode.h
+            src/designer/nodes/VisualNode.cpp
+            src/designer/nodes/VisualHandle.cpp
+            src/designer/nodes/VisualHandle.h
+                # designer/nodes/input
+                src/designer/nodes/input/InputNodeRegistry.h
+                src/designer/nodes/input/InputTraits.h
+                src/designer/nodes/input/InputNode.h
+                src/designer/nodes/input/VisualInputNode.h
+                src/designer/nodes/input/VisualInputNode.cpp
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
 

@@ -5,7 +5,9 @@
 #include <string>
 
 #include "../util/TexData.h"
-#include "../util/Vec4.h"
+#include "../util/Vec.h"
+
+struct Color;
 
 namespace generator {
     template<typename T>
@@ -45,8 +47,8 @@ namespace generator {
         }
     };
 
-    template<>
-    struct ColorTraits<Vec4> {
+    template<size_t N>
+    struct ColorTraits<Vec<N>> {
         static ImU32 color() {
             return ImGui::ColorConvertFloat4ToU32(ImVec4(0.5f, 0.3f, 0.9f, 1.0f));
         }
@@ -56,6 +58,13 @@ namespace generator {
     struct ColorTraits<TexData> {
         static ImU32 color() {
             return IM_COL32(252, 186, 3, 255);
+        }
+    };
+
+    template<>
+    struct ColorTraits<Color> {
+        static ImU32 color() {
+            return IM_COL32(255, 0, 255, 255);
         }
     };
 }

@@ -14,7 +14,7 @@ namespace nodes {
         ~SampleTextureNode() override = default;
 
         [[nodiscard]] const char* name() const override { return "Sample Texture"; }
-        static inline NodeRegistrar<SampleTextureNode> registrar{"IO", "Sample Texture"};
+        static inline NodeRegistrar<SampleTextureNode> registrar{"Generate", "Sample Texture"};
 
     protected:
         void processInternal() override;
