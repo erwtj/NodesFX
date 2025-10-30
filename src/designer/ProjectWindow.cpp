@@ -180,19 +180,20 @@ void ProjectWindow::drawNodePopup() {
 void ProjectWindow::tick() {
     // Start
     ImGui::NewFrame();
+
     ed::SetCurrentEditor(_editorContext);
 
-    auto& io = ImGui::GetIO();
-    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-    ImGui::SetNextWindowSize(io.DisplaySize);
-
-    ImGui::Begin("##EditorMainWindow", nullptr,
-        ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoCollapse |
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoBringToFrontOnFocus |
-        ImGuiWindowFlags_NoNavFocus);
+    // auto& io = ImGui::GetIO();
+    // ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+    // ImGui::SetNextWindowSize(io.DisplaySize);
+    //
+    // ImGui::Begin("##EditorMainWindow", nullptr,
+    //     ImGuiWindowFlags_NoTitleBar |
+    //     ImGuiWindowFlags_NoCollapse |
+    //     ImGuiWindowFlags_NoResize |
+    //     ImGuiWindowFlags_NoMove |
+    //     ImGuiWindowFlags_NoBringToFrontOnFocus |
+    //     ImGuiWindowFlags_NoNavFocus);
 
     // Workaround to get popup rendering ontop of dockspace and editor (since inside causes clipping errors)
     if (_openNewNodePopup) {
@@ -205,27 +206,31 @@ void ProjectWindow::tick() {
     }
 
     ImGuiID dockspaceId = ImGui::GetID("EditorDockspace");
-    ImGui::DockSpace(dockspaceId, ImVec2(0.0f, 0.0f),
-        ImGuiDockNodeFlags_NoDockingInCentralNode |
-        ImGuiDockNodeFlags_PassthruCentralNode);
+    // ImGui::DockSpace(dockspaceId, ImVec2(0.0f, 0.0f),
+    //     ImGuiDockNodeFlags_NoDockingInCentralNode |
+    //     ImGuiDockNodeFlags_PassthruCentralNode);
 
     if (_firstTime) {
         _firstTime = false;
         buildDockspace(dockspaceId);
     }
 
+    ImGui::Begin("Hello world!");
     tickEditor();
+    ImGui::End();
     tickInspector();
 
     // End
-    ImGui::End();
+    // ImGui::End();
     ed::SetCurrentEditor(nullptr);
     ImGui::Render();
 }
 
-ImGuiWindowFlags panelFlags = ImGuiWindowFlags_NoCollapse |
-                              ImGuiWindowFlags_NoMove |
-                              ImGuiWindowFlags_NoResize;
+// ImGuiWindowFlags panelFlags = ImGuiWindowFlags_NoCollapse |
+//                               ImGuiWindowFlags_NoMove |
+//                               ImGuiWindowFlags_NoResize;
+
+ImGuiWindowFlags panelFlags = ImGuiWindowFlags_None;
 void ProjectWindow::tickEditor() {
     ImGui::Begin("Editor", nullptr, panelFlags);
     ed::Begin("MyEditor", ImVec2(0.0, 0.0f));
@@ -350,6 +355,12 @@ void ProjectWindow::drawInspector() {
         }
     } else {
         ImGui::Text("No node selected");
+    }
+
+    ImGui::SeparatorText("Test");
+    ImGui::Button("tooltip test");
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+        ImGui::SetTooltip("Hello!");
     }
 
     ImGui::End();

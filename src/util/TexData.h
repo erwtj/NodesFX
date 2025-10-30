@@ -2,6 +2,8 @@
 #define TEXDATA_H
 
 #include <memory>
+#include <sstream>
+
 #include "SDL3/SDL_opengl.h"
 #include "imgui.h"
 
@@ -30,6 +32,16 @@ public:
     void setData(float* data, int width, int height) {
         if (!impl) impl = std::make_shared<Impl>();
         impl->setData(data, width, height);
+    }
+
+    inline friend std::ostream & operator<<(std::ostream & os, const TexData & v) {
+        return os << "width: " << v.getWidth() << ", height: " << v.getHeight() << ", textureId: " << v.getTextureId();
+    }
+
+    explicit operator std::string() const {
+        std::ostringstream oss;
+        oss << *this;
+        return oss.str();
     }
 
 private:

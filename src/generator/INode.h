@@ -5,6 +5,10 @@
 
 #include "IDataHandle.h"
 
+// Nodes need extra information needed for OpenFX
+// Especially input nodes, which are now a part of the designer
+// InputNode should be moved to generator, and contain internal fields for OpenFX settings
+
 namespace generator {
     class INode {
     public:

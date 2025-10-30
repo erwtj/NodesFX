@@ -57,6 +57,16 @@ struct Color {
     static Color one() {
         return Color(1.0f, 1.0f, 1.0f, 1.0f);
     }
+
+    inline friend std::ostream & operator<<(std::ostream & os, const Color & v) {
+        return os << v.r << ", " << v.g << ", " << v.b << ", " << v.a;
+    }
+
+    explicit operator std::string() const {
+        std::ostringstream oss;
+        oss << *this;
+        return oss.str();
+    }
 };
 
 #endif //COLOR_H

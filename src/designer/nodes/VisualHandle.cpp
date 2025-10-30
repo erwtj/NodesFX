@@ -29,14 +29,14 @@ void drawHandleCircle(float radius, ImU32 color) {
 }
 
 void VisualHandle::draw(float nodeWidth) const {
-    // TODO: Instead of color for input-output, use color for data type
-    // Also maybe some icon instead of a circle
-
-    // draw pin circle
     if (_handle->type() == generator::IHandle::HandleType::Input) {
         drawHandleCircle(CIRCLE_RADIUS, _handle->color());
         ed::BeginPin(_pinId, ed::PinKind::Input); // put pin around circle
         ImGui::Dummy(ImVec2(CIRCLE_RADIUS * 3, ImGui::GetTextLineHeight())); // spacing for pin
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+        {
+            ImGui::SetTooltip(_handle->dataTypeName().c_str());
+        }
         ed::EndPin();
 
         ImGui::SameLine();
@@ -49,7 +49,15 @@ void VisualHandle::draw(float nodeWidth) const {
 
         drawHandleCircle(CIRCLE_RADIUS, _handle->color());
         ed::BeginPin(_pinId, ed::PinKind::Output); // put pin around circle
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+        {
+            ImGui::SetTooltip(_handle->dataTypeName().c_str());
+        }
         ImGui::Dummy(ImVec2(CIRCLE_RADIUS * 3, ImGui::GetTextLineHeight())); // spacing for pin
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+        {
+            ImGui::SetTooltip(_handle->dataTypeName().c_str());
+        }
         ed::EndPin();
     }
 }

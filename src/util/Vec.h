@@ -1,6 +1,7 @@
 #ifndef VEC_H
 #define VEC_H
 #include <cmath>
+#include <sstream>
 
 template <size_t N>
 struct Vec {
@@ -37,6 +38,15 @@ struct Vec {
         return std::sqrt(dot(*this));
     }
 };
+
+template <size_t N>
+inline std::ostream& operator<<(std::ostream& os, const Vec<N>& v) {
+    for (size_t i = 0; i < N; ++i) {
+        os << v.data[i];
+        if (i < N - 1) os << ", ";
+    }
+    return os;
+}
 
 // Specializations for easy access
 template <>

@@ -19,7 +19,10 @@ namespace generator {
 
         [[nodiscard]] const char* name() const { return _name; }
         [[nodiscard]] HandleType type() const { return _type; }
+
         [[nodiscard]] virtual const std::type_info& dataType() const = 0;
+        [[nodiscard]] virtual const std::string dataTypeName() const = 0;
+        [[nodiscard]] virtual const std::string dataToString() const = 0;
 
         [[nodiscard]] virtual uint64_t version() = 0;
 
@@ -31,7 +34,12 @@ namespace generator {
         // Returns true if connecting to target would create a loop
         virtual bool checkLoop(IHandle* target) = 0;
 
+        // TODO: Color trait is a frontend thing really
         [[nodiscard]] virtual ImU32 color() const = 0;
+
+        virtual explicit operator std::string() const {
+            return _name;
+        }
     private:
         const char* _name;
     protected:

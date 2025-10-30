@@ -1,5 +1,6 @@
 #ifndef HANDLE_H
 #define HANDLE_H
+
 #include "ColorTraits.h"
 #include "IHandle.h"
 
@@ -19,6 +20,12 @@ namespace generator {
         }
 
         [[nodiscard]] const std::type_info& dataType() const override { return typeid(T); }
+        [[nodiscard]] const std::string dataTypeName() const override { return typeid(T).name(); }
+        [[nodiscard]] const std::string dataToString() const override {
+            std::ostringstream oss;
+            oss << _data;
+            return oss.str();
+        }
 
         // TODO: Kind of weird that this is part of generator
         [[nodiscard]] ImU32 color() const override {
