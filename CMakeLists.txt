@@ -89,6 +89,14 @@ add_executable(${PROJECT_NAME} main.cpp
                 src/designer/nodes/input/VisualInputNode.cpp
         src/implementations/math/vectors/VectorLengthNode.cpp
         src/implementations/math/vectors/VectorLengthNode.h
+        src/implementations/math/trigonometry/SinNode.cpp
+        src/implementations/math/trigonometry/SinNode.h
+        src/implementations/math/trigonometry/CosNode.cpp
+        src/implementations/math/trigonometry/CosNode.h
+        src/implementations/math/trigonometry/TanNode.cpp
+        src/implementations/math/trigonometry/TanNode.h
+        src/implementations/math/SubtractNode.cpp
+        src/implementations/math/SubtractNode.h
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
 

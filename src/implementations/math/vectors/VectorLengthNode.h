@@ -22,7 +22,7 @@ namespace nodes {
         }
 
         static inline NodeRegistrar<VectorLengthNode<VecType, N>> registrar{
-            "Math",
+            "Math/Vectors",
             N == 2 ? "Length vec2" :
             N == 3 ? "Length vec3" :
             N == 4 ? "Length vec4" : "Length vecN"

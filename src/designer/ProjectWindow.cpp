@@ -99,6 +99,22 @@ bool ProjectWindow::isLinkValid(const ed::PinId inputPinId, const ed::PinId outp
     return inputHandle->canConnect(outputHandle);
 }
 
+void ProjectWindow::drawCategory(const std::string& category) {
+    ImVec2 popupPos = ed::ScreenToCanvas(ImGui::GetCursorScreenPos());
+
+    for (const auto& subcategory : NodeRegistry::subcategories(category)) {
+        if (ImGui::TreeNode(subcategory.c_str())) {
+            drawCategory(category + "/" + subcategory);
+            ImGui::TreePop();
+        }
+    }
+    for (const auto& nodeEntry : NodeRegistry::get(category)) {
+        if (ImGui::Selectable(nodeEntry.name.c_str())) {
+            createNode(nodeEntry, popupPos);
+        }
+    }
+}
+
 // Even though this is function is global, you can't switch ProjectWindows while the popup is open, so it's fine (popup is functionally globally static)
 char query[256] = "";
 void ProjectWindow::drawNodePopup() {
@@ -111,16 +127,7 @@ void ProjectWindow::drawNodePopup() {
     ImGui::Separator();
 
     if (query[0] == '\0') { // List all nodes
-        for (const auto& category : NodeRegistry::categories()) {
-            if (ImGui::TreeNode(category.c_str())) {
-                for (const auto& nodeEntry : NodeRegistry::get(category)) {
-                    if (ImGui::Selectable(nodeEntry.name.c_str())) {
-                        createNode(nodeEntry, popupPos);
-                    }
-                }
-                ImGui::TreePop();
-            }
-        }
+        drawCategory("");
         if (ImGui::TreeNode("Inputs")) {
             for (const auto& inputNodeEntry : InputNodeRegistry::entries()) {
                 if (ImGui::Selectable(inputNodeEntry.name.c_str())) {
@@ -130,32 +137,32 @@ void ProjectWindow::drawNodePopup() {
             ImGui::TreePop();
         }
     } else { // Filtered list
-        bool hit = false;
-        for (const auto& category : NodeRegistry::categories()) {
-            for (const auto& nodeEntry : NodeRegistry::get(category)) {
-                const char* name = nodeEntry.name.c_str();
-                if (containsIgnoreCase(name, query)) {
-                    if (ImGui::Selectable(name)) {
-                        createNode(nodeEntry, popupPos);
-                    }
-                    hit = true;
-                }
-            }
-        }
-
-        for (const auto& inputNodeEntry : InputNodeRegistry::entries()) {
-            const char* name = inputNodeEntry.name.c_str();
-            if (containsIgnoreCase(name, query)) {
-                if (ImGui::Selectable(name)) {
-                    addNode(inputNodeEntry.create(), popupPos);
-                }
-                hit = true;
-            }
-        }
-
-        if (!hit) {
-            ImGui::TextDisabled("No results found");
-        }
+        // bool hit = false;
+        // for (const auto& category : NodeRegistry::categories()) {
+        //     for (const auto& nodeEntry : NodeRegistry::get(category)) {
+        //         const char* name = nodeEntry.name.c_str();
+        //         if (containsIgnoreCase(name, query)) {
+        //             if (ImGui::Selectable(name)) {
+        //                 createNode(nodeEntry, popupPos);
+        //             }
+        //             hit = true;
+        //         }
+        //     }
+        // }
+        //
+        // for (const auto& inputNodeEntry : InputNodeRegistry::entries()) {
+        //     const char* name = inputNodeEntry.name.c_str();
+        //     if (containsIgnoreCase(name, query)) {
+        //         if (ImGui::Selectable(name)) {
+        //             addNode(inputNodeEntry.create(), popupPos);
+        //         }
+        //         hit = true;
+        //     }
+        // }
+        //
+        // if (!hit) {
+        //     ImGui::TextDisabled("No results found");
+        // }
     }
     ImGui::Separator();
 

@@ -35,6 +35,7 @@ private:
     void updateInspector();
     void drawInspector();
 
+    void drawCategory(const std::string& category);
     void drawNodePopup();
 
     [[nodiscard]] IVisualNode* findNodeById(ax::NodeEditor::NodeId nodeId);

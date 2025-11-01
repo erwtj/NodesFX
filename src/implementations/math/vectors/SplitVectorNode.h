@@ -25,7 +25,7 @@ namespace nodes {
         }
 
         static inline NodeRegistrar<SplitVectorNode<VecType, N>> registrar{
-            "Math",
+            "Math/Vectors",
             N == 2 ? "Split vec2" :
             N == 3 ? "Split vec3" :
             N == 4 ? "Split vec4" : "Split vecN"

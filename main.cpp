@@ -122,7 +122,7 @@ int main(int, char**)
 
     ProjectWindow app{};
 
-    for (auto& cat : NodeRegistry::categories()) {
+    for (auto& cat : NodeRegistry::subcategories()) {
         std::cout << "Category: " << cat << "\n";
         for (auto& entry : NodeRegistry::get(cat)) {
             std::cout << "  - " << entry.name << "\n";
