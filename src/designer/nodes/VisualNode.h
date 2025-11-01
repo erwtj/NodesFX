@@ -24,14 +24,14 @@ public:
 
     [[nodiscard]] const char* getName() const override { return _node->name(); }
 
-    [[nodiscard]] const std::vector<VisualHandle>& getInputHandles() const override { return _inputHandles; }
-    [[nodiscard]] const std::vector<VisualHandle>& getOutputHandles() const override { return _outputHandles; }
+    [[nodiscard]] const std::vector<std::shared_ptr<VisualHandle>>& getInputHandles() const override { return _inputHandles; }
+    [[nodiscard]] const std::vector<std::shared_ptr<VisualHandle>>& getOutputHandles() const override { return _outputHandles; }
 
 protected:
     std::unique_ptr<INode> _node;
 
-    std::vector<VisualHandle> _inputHandles = {};
-    std::vector<VisualHandle> _outputHandles = {};
+    std::vector<std::shared_ptr<VisualHandle>> _inputHandles = {};
+    std::vector<std::shared_ptr<VisualHandle>> _outputHandles = {};
 };
 
 

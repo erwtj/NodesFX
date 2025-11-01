@@ -20,10 +20,10 @@ namespace generator {
         }
 
         [[nodiscard]] const std::type_info& dataType() const override { return typeid(T); }
-        [[nodiscard]] const std::string dataTypeName() const override { return typeid(T).name(); }
+        [[nodiscard]] const std::string dataTypeName() const override { return typeid(T).name(); } // TODO: Not user friendly
         [[nodiscard]] const std::string dataToString() const override {
             std::ostringstream oss;
-            oss << _data;
+            oss << data();
             return oss.str();
         }
 

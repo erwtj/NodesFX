@@ -39,7 +39,7 @@ private:
 
     [[nodiscard]] IVisualNode* findNodeById(ax::NodeEditor::NodeId nodeId);
     [[nodiscard]] IVisualNode* findNodeByHandleId(ax::NodeEditor::PinId pinId);
-    [[nodiscard]] const VisualHandle& findHandleById(ax::NodeEditor::PinId pinId);
+    [[nodiscard]] VisualHandle* findHandleById(ax::NodeEditor::PinId pinId);
 };
 
 

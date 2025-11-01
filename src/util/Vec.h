@@ -34,7 +34,7 @@ struct Vec {
         return result;
     }
 
-    float length() const {
+    [[nodiscard]] float length() const {
         return std::sqrt(dot(*this));
     }
 };

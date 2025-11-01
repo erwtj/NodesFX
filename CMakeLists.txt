@@ -50,8 +50,8 @@ add_executable(${PROJECT_NAME} main.cpp
         src/implementations/NodeRegistry.h
         src/implementations/math/AddNode.cpp
         src/implementations/math/AddNode.h
-        src/implementations/math/SplitVectorNode.h
-        src/implementations/math/SplitVectorNode.cpp
+        src/implementations/math/vectors/SplitVectorNode.h
+        src/implementations/math/vectors/SplitVectorNode.cpp
         src/implementations/effects/SolidColorNode.cpp
         src/implementations/effects/SolidColorNode.h
         src/implementations/effects/BlurNode.cpp
@@ -87,6 +87,8 @@ add_executable(${PROJECT_NAME} main.cpp
                 src/designer/nodes/input/InputNode.h
                 src/designer/nodes/input/VisualInputNode.h
                 src/designer/nodes/input/VisualInputNode.cpp
+        src/implementations/math/vectors/VectorLengthNode.cpp
+        src/implementations/math/vectors/VectorLengthNode.h
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
 

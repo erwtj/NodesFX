@@ -7,18 +7,16 @@ namespace ed = ax::NodeEditor;
 
 VisualHandle::VisualHandle(const ax::NodeEditor::NodeId nodeId, const std::shared_ptr<generator::IHandle>& handle) : _pinId(IdManager::nextPinId(nodeId)), _handle(handle) {};
 
-[[nodiscard]] bool VisualHandle::canConnect(const VisualHandle &other) const {
-    if (!_handle || !other._handle)
+[[nodiscard]] bool VisualHandle::canConnect(const VisualHandle* other) const {
+    if (!_handle || !other->_handle)
         return false;
 
-    return _handle->canConnect(other.getHandle().get());
+    return _handle->canConnect(other->getHandle().get());
 }
 
-void VisualHandle::connectTo(const VisualHandle &other) const {
-    std::cout << "Connecting handle " << getName() << " to " << other.getName() << std::endl;
-
+void VisualHandle::connectTo(const VisualHandle* other) const {
     if (canConnect(other))
-        _handle->connect(other.getHandle().get());
+        _handle->connect(other->getHandle().get());
 }
 
 void drawHandleCircle(float radius, ImU32 color) {

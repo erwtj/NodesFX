@@ -17,8 +17,8 @@ public:
     [[nodiscard]] ax::NodeEditor::PinId getPinId() const { return _pinId; }
     [[nodiscard]] std::shared_ptr<generator::IHandle> getHandle() const { return _handle; }
 
-    [[nodiscard]] bool canConnect(const VisualHandle &other) const;
-    void connectTo(const VisualHandle &other) const;
+    [[nodiscard]] bool canConnect(const VisualHandle* other) const;
+    void connectTo(const VisualHandle* other) const;
 
     void draw(float nodeWidth) const;
 

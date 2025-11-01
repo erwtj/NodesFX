@@ -32,10 +32,10 @@ void ProjectWindow::deleteNode(const ax::NodeEditor::NodeId& nodeId) {
     const IVisualNode* node = findNodeById(nodeId);
 
     for (const auto& handle : node->getInputHandles()) {
-        pins.emplace(handle.getPinId());
+        pins.emplace(handle->getPinId());
     }
     for (const auto& handle : node->getOutputHandles()) {
-        pins.emplace(handle.getPinId());
+        pins.emplace(handle->getPinId());
     }
 
     std::unordered_set<ax::NodeEditor::LinkId> linksToDelete = {};
@@ -57,8 +57,8 @@ void ProjectWindow::deleteNode(const ax::NodeEditor::NodeId& nodeId) {
 }
 
 void ProjectWindow::deleteLink(const LinkInfo& link) {
-    const VisualHandle inputHandle = findHandleById(link.inputPinId);
-    inputHandle.getHandle()->disconnect();
+    const VisualHandle* inputHandle = findHandleById(link.inputPinId);
+    inputHandle->getHandle()->disconnect();
     _links.erase(link.id);
 }
 
@@ -75,28 +75,28 @@ IVisualNode* ProjectWindow::findNodeByHandleId(const ax::NodeEditor::PinId nodeI
     return findNodeById(parentNodeId);
 }
 
-const VisualHandle& ProjectWindow::findHandleById(const ed::PinId pinId) {
+VisualHandle* ProjectWindow::findHandleById(const ed::PinId pinId) {
     const IVisualNode* node = findNodeByHandleId(pinId);
 
     for (auto& handle : node->getInputHandles()) {
-        if (handle.getPinId() == pinId) {
-            return handle;
+        if (handle->getPinId() == pinId) {
+            return handle.get();
         }
     }
     for (auto& handle : node->getOutputHandles()) {
-        if (handle.getPinId() == pinId) {
-            return handle;
+        if (handle->getPinId() == pinId) {
+            return handle.get();
         }
     }
 
-    return VisualHandle(0, nullptr);
+    return nullptr;
 }
 
 bool ProjectWindow::isLinkValid(const ed::PinId inputPinId, const ed::PinId outputPinId) {
-    const VisualHandle inputHandle = findHandleById(inputPinId);
-    const VisualHandle outputHandle = findHandleById(outputPinId);
+    const VisualHandle* inputHandle = findHandleById(inputPinId);
+    const VisualHandle* outputHandle = findHandleById(outputPinId);
 
-    return inputHandle.canConnect(outputHandle);
+    return inputHandle->canConnect(outputHandle);
 }
 
 // Even though this is function is global, you can't switch ProjectWindows while the popup is open, so it's fine (popup is functionally globally static)
@@ -251,13 +251,13 @@ void ProjectWindow::updateEditor() {
                 if (isLinkValid(inputPinId, outputPinId)) {
                     if (ed::AcceptNewItem()) {
                         // TODO: Gross why are we doing this lookup again
-                        VisualHandle inputHandle = findHandleById(inputPinId);
-                        VisualHandle outputHandle = findHandleById(outputPinId);
+                        VisualHandle* inputHandle = findHandleById(inputPinId);
+                        VisualHandle* outputHandle = findHandleById(outputPinId);
 
-                        outputHandle.connectTo(inputHandle);
+                        outputHandle->connectTo(inputHandle);
 
                         // Actually check which one is input and which one is output
-                        if (inputHandle.getHandle()->type() != generator::IHandle::HandleType::Input) {
+                        if (inputHandle->getHandle()->type() != generator::IHandle::HandleType::Input) {
                             std::swap(inputPinId, outputPinId);
                         }
 
@@ -334,11 +334,11 @@ void ProjectWindow::drawInspector() {
         ImGui::Text("%s Node ID: %d", node->getName(), static_cast<int>(node->getNodeId().Get()));
         ImGui::Text("Input Handles:");
         for (const auto& handle : node->getInputHandles()) {
-            ImGui::Text(" - %s (%s)", handle.getName(), handle.getHandle()->dataToString().c_str());
+            ImGui::Text(" - %s (%s)", handle->getName(), handle->getHandle()->dataToString().c_str());
         }
         ImGui::Text("Output Handles:");
         for (const auto& handle : node->getOutputHandles()) {
-            ImGui::Text(" - %s (%s)", handle.getName(), handle.getHandle()->dataToString().c_str());
+            ImGui::Text(" - %s (%s)", handle->getName(), handle->getHandle()->dataToString().c_str());
         }
     } else {
         ImGui::Text("No node selected");

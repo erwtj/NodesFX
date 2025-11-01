@@ -35,7 +35,7 @@ public:
         }
 
         ImGui::SameLine();
-        _outputHandles[0].draw(totalWidth);
+        _outputHandles[0]->draw(totalWidth);
 
         ed::EndNode();
     }

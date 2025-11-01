@@ -15,8 +15,8 @@ public:
 
     [[nodiscard]] virtual const char* getName() const = 0;
 
-    [[nodiscard]] virtual const std::vector<VisualHandle>& getInputHandles() const = 0;
-    [[nodiscard]] virtual const std::vector<VisualHandle>& getOutputHandles() const = 0;
+    [[nodiscard]] virtual const std::vector<std::shared_ptr<VisualHandle>>& getInputHandles() const = 0;
+    [[nodiscard]] virtual const std::vector<std::shared_ptr<VisualHandle>>& getOutputHandles() const = 0;
 
     [[nodiscard]] virtual ax::NodeEditor::NodeId getNodeId() const {;
         return _nodeId;

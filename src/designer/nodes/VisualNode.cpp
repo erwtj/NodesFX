@@ -12,10 +12,10 @@ VisualNode::VisualNode(std::unique_ptr<INode> node) : _node(std::move(node)) {
     _outputHandles.reserve(_node->_outputHandles.size());
 
     for (const auto& _inputHandle : _node->_inputHandles) {
-        _inputHandles.emplace_back(_nodeId, _inputHandle);
+        _inputHandles.emplace_back(std::make_shared<VisualHandle>(_nodeId, _inputHandle));
     }
     for (const auto& _outputHandle : _node->_outputHandles) {
-        _outputHandles.emplace_back(_nodeId, _outputHandle);
+        _outputHandles.emplace_back(std::make_shared<VisualHandle>(_nodeId, _outputHandle));
     }
 }
 
@@ -27,7 +27,7 @@ void VisualNode::draw() {
 
     float largestInputHandleNameWidth = 0.0f;
     for (const auto& inputHandle : _inputHandles) {
-        float nameWidth = ImGui::CalcTextSize(inputHandle.getName()).x;
+        float nameWidth = ImGui::CalcTextSize(inputHandle->getName()).x;
         if (nameWidth > largestInputHandleNameWidth) {
             largestInputHandleNameWidth = nameWidth + handleSizeOffset;
         }
@@ -35,7 +35,7 @@ void VisualNode::draw() {
 
     float largestOutputHandleNameWidth = 0.0f;
     for (const auto& outputHandle : _outputHandles) {
-        float nameWidth = ImGui::CalcTextSize(outputHandle.getName()).x;
+        float nameWidth = ImGui::CalcTextSize(outputHandle->getName()).x;
         if (nameWidth > largestOutputHandleNameWidth) {
             largestOutputHandleNameWidth = nameWidth + handleSizeOffset;
         }
@@ -49,7 +49,7 @@ void VisualNode::draw() {
     int maxCount = std::max(_inputHandles.size(), _outputHandles.size());
     for (int i = 0; i < maxCount; i++) {
         if (i < _inputHandles.size()) {
-            _inputHandles[i].draw(totalWidth);
+            _inputHandles[i]->draw(totalWidth);
         } else {
             ImGui::Dummy(ImVec2(0, ImGui::GetTextLineHeight()));
         }
@@ -58,18 +58,18 @@ void VisualNode::draw() {
         ImGui::SameLine();
 
         if (i < _outputHandles.size()) {
-            _outputHandles[i].draw(totalWidth);
+            _outputHandles[i]->draw(totalWidth);
         } else {
             ImGui::Dummy(ImVec2(0, ImGui::GetTextLineHeight()));
         }
     }
 
     TexData texData;
-    if (!_outputHandles.empty() && _outputHandles[0].getHandle()->dataType() == typeid(TexData)) {
-        auto texDataHandle = std::dynamic_pointer_cast<OutputHandle<TexData>>(_outputHandles[0].getHandle());
+    if (!_outputHandles.empty() && _outputHandles[0]->getHandle()->dataType() == typeid(TexData)) {
+        auto texDataHandle = std::dynamic_pointer_cast<OutputHandle<TexData>>(_outputHandles[0]->getHandle());
         texData = texDataHandle->data();
-    } else if (_outputHandles.empty() && _inputHandles.size() == 1 && _inputHandles[0].getHandle()->dataType() == typeid(TexData)) {
-        auto texDataHandle = std::dynamic_pointer_cast<InputHandle<TexData>>(_inputHandles[0].getHandle());
+    } else if (_outputHandles.empty() && _inputHandles.size() == 1 && _inputHandles[0]->getHandle()->dataType() == typeid(TexData)) {
+        auto texDataHandle = std::dynamic_pointer_cast<InputHandle<TexData>>(_inputHandles[0]->getHandle());
         texData = texDataHandle->data();
     }
 
