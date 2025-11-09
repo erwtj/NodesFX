@@ -104,7 +104,7 @@ void ProjectWindow::drawCategory(const std::string& category) {
 
     for (const auto& subcategory : NodeRegistry::subcategories(category)) {
         if (ImGui::TreeNode(subcategory.c_str())) {
-            drawCategory(category + "/" + subcategory);
+            drawCategory(category + "/" += subcategory);
             ImGui::TreePop();
         }
     }
@@ -129,40 +129,40 @@ void ProjectWindow::drawNodePopup() {
     if (query[0] == '\0') { // List all nodes
         drawCategory("");
         if (ImGui::TreeNode("Inputs")) {
-            for (const auto& inputNodeEntry : InputNodeRegistry::entries()) {
-                if (ImGui::Selectable(inputNodeEntry.name.c_str())) {
-                    addNode(inputNodeEntry.create(), popupPos);
+            for (const auto& [name, create] : InputNodeRegistry::entries()) {
+                if (ImGui::Selectable(name.c_str())) {
+                    addNode(create(), popupPos);
                 }
             }
             ImGui::TreePop();
         }
     } else { // Filtered list
-        // bool hit = false;
-        // for (const auto& category : NodeRegistry::categories()) {
-        //     for (const auto& nodeEntry : NodeRegistry::get(category)) {
-        //         const char* name = nodeEntry.name.c_str();
-        //         if (containsIgnoreCase(name, query)) {
-        //             if (ImGui::Selectable(name)) {
-        //                 createNode(nodeEntry, popupPos);
-        //             }
-        //             hit = true;
-        //         }
-        //     }
-        // }
-        //
-        // for (const auto& inputNodeEntry : InputNodeRegistry::entries()) {
-        //     const char* name = inputNodeEntry.name.c_str();
-        //     if (containsIgnoreCase(name, query)) {
-        //         if (ImGui::Selectable(name)) {
-        //             addNode(inputNodeEntry.create(), popupPos);
-        //         }
-        //         hit = true;
-        //     }
-        // }
-        //
-        // if (!hit) {
-        //     ImGui::TextDisabled("No results found");
-        // }
+        bool hit = false;
+        for (const auto& category : NodeRegistry::allCategoryPaths()) {
+            for (const auto& nodeEntry : NodeRegistry::get(category)) {
+                const char* name = nodeEntry.name.c_str();
+                if (containsIgnoreCase(name, query)) {
+                    if (ImGui::Selectable(name)) {
+                        createNode(nodeEntry, popupPos);
+                    }
+                    hit = true;
+                }
+            }
+        }
+
+        for (const auto& inputNodeEntry : InputNodeRegistry::entries()) {
+            const char* name = inputNodeEntry.name.c_str();
+            if (containsIgnoreCase(name, query)) {
+                if (ImGui::Selectable(name)) {
+                    addNode(inputNodeEntry.create(), popupPos);
+                }
+                hit = true;
+            }
+        }
+
+        if (!hit) {
+            ImGui::TextDisabled("No results found");
+        }
     }
     ImGui::Separator();
 
