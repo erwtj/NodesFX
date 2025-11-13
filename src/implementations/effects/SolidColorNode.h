@@ -2,9 +2,9 @@
 #define SOLIDCOLORNODE_H
 
 #include "../NodeRegistry.h"
-#include "../../generator/INode.h"
-#include "../../generator/InputHandle.h"
-#include "../../util/Color.h"
+#include "../../generator/nodes/INode.h"
+#include "../../generator/nodes/InputHandle.h"
+#include "../../../imgproc/include/Color.h"
 
 namespace nodes {
     class SolidColorNode : public INode {
@@ -14,6 +14,7 @@ namespace nodes {
 
         [[nodiscard]] const char* name() const override { return "Solid Color"; }
         static inline NodeRegistrar<SolidColorNode> registrar{"Generate", "Solid Color"};
+        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
 
     protected:
         void processInternal() override;

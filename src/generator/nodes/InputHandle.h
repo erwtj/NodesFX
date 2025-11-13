@@ -27,7 +27,13 @@ namespace generator {
 
         [[nodiscard]] uint64_t version() override {
             if (output) {
-                IHandle::_version = output->version(); // Sync version with output
+                uint64_t currentOutputVersion = output->version();
+
+                // Detect any change in output regardless of absolute values
+                if (currentOutputVersion != lastSeenOutputVersion) {
+                    lastSeenOutputVersion = currentOutputVersion;
+                    IHandle::_version++; // bump because input's dependency changed
+                }
             }
             return IHandle::_version;
         }
@@ -46,13 +52,17 @@ namespace generator {
         // Unsafe connect, make sure to check canConnect before calling
         void connect(IHandle* other) override {
             this->disconnect();
-            IHandle::_version++;
             output = static_cast<OutputHandle<T>*>(other);
+            lastSeenOutputVersion = output->version();
+            IHandle::_version++;
         }
 
         void disconnect() override {
-            IHandle::_version++;
-            output = nullptr;
+            if (output) {
+                output = nullptr;
+                lastSeenOutputVersion = 0;
+                IHandle::_version++;
+            }
         }
 
         // Returns true if connecting would create a loop
@@ -65,8 +75,24 @@ namespace generator {
 
             return false;
         }
+
+        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {
+            if (output)
+                return output->generateCode(processedNodes) + "\n";
+
+            return "";
+        }
+
+        std::string codeVar() override {
+            if (output)
+                return output->codeVar(); // Link to output variable field
+
+            // TODO: Load current node value, like 'true' or 'Color(1.0, 0.0, 0.0, 1.0)'
+            return "";
+        }
     private:
         OutputHandle<T>* output = nullptr;
+        uint64_t lastSeenOutputVersion = 0;
     };
 }
 

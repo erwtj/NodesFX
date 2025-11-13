@@ -1,7 +1,7 @@
 #include "VisualNode.h"
 
-#include "../../generator/InputHandle.h"
-#include "../../generator/OutputHandle.h"
+#include "../../generator/nodes/InputHandle.h"
+#include "../../generator/nodes/OutputHandle.h"
 
 #include <imgui_node_editor.h>
 
@@ -16,6 +16,17 @@ VisualNode::VisualNode(std::unique_ptr<INode> node) : _node(std::move(node)) {
     }
     for (const auto& _outputHandle : _node->_outputHandles) {
         _outputHandles.emplace_back(std::make_shared<VisualHandle>(_nodeId, _outputHandle));
+    }
+
+    if (!_outputHandles.empty() && _outputHandles[0]->getHandle()->dataType() == typeid(TexData))
+        texDataHandle = std::dynamic_pointer_cast<OutputHandle<TexData>>(_outputHandles[0]->getHandle());
+    else if (_outputHandles.empty() && _inputHandles.size() == 1 && _inputHandles[0]->getHandle()->dataType() == typeid(TexData))
+        texDataHandle = std::dynamic_pointer_cast<InputHandle<TexData>>(_inputHandles[0]->getHandle());
+
+    if (texDataHandle) {
+        texVersion = texDataHandle->version();
+        texHandle = new GLTextureHandle();
+        texHandle->upload(texDataHandle->data());
     }
 }
 
@@ -64,20 +75,16 @@ void VisualNode::draw() {
         }
     }
 
-    TexData texData;
-    if (!_outputHandles.empty() && _outputHandles[0]->getHandle()->dataType() == typeid(TexData)) {
-        auto texDataHandle = std::dynamic_pointer_cast<OutputHandle<TexData>>(_outputHandles[0]->getHandle());
-        texData = texDataHandle->data();
-    } else if (_outputHandles.empty() && _inputHandles.size() == 1 && _inputHandles[0]->getHandle()->dataType() == typeid(TexData)) {
-        auto texDataHandle = std::dynamic_pointer_cast<InputHandle<TexData>>(_inputHandles[0]->getHandle());
-        texData = texDataHandle->data();
-    }
+    if (texDataHandle != nullptr && texDataHandle->data().getWidth() != 0 && texDataHandle->data().getHeight() != 0) {
+        if (texDataHandle->version() != texVersion) { // Tex updated since last time
+            texHandle->upload(texDataHandle->data());
+            texVersion = texDataHandle->version();
+        }
 
-    if (texData.getData() != nullptr) {
-        float aspectRatio = static_cast<float>(texData.getWidth()) / static_cast<float>(texData.getHeight());
+        float aspectRatio = static_cast<float>(texHandle->width()) / static_cast<float>(texHandle->height());
         float displayWidth = totalWidth;
         float displayHeight = totalWidth / aspectRatio;
-        ImGui::Image(texData.getTextureId(), ImVec2(displayWidth, displayHeight));
+        ImGui::Image(texHandle->getImGuiTexture(), ImVec2(displayWidth, displayHeight));
     }
 
     ed::EndNode();
@@ -85,4 +92,9 @@ void VisualNode::draw() {
 
 std::unique_ptr<VisualNode> VisualNode::createFromRegistryEntry(const NodeRegistry::Entry& entry) {
     return std::make_unique<VisualNode>(entry.create());
+}
+
+std::string VisualNode::generateCode() {
+    const std::unordered_set<uint64_t> nodeIds {};
+    return _node->generateCode(nodeIds);
 }

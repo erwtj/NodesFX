@@ -2,8 +2,8 @@
 #define ADDNODE_H
 
 #include "../NodeRegistry.h"
-#include "../../generator/INode.h"
-#include "../../generator/InputHandle.h"
+#include "../../generator/nodes/INode.h"
+#include "../../generator/nodes/InputHandle.h"
 
 using namespace generator;
 
@@ -15,6 +15,7 @@ namespace nodes {
 
         [[nodiscard]] const char* name() const override { return "Add"; }
         static inline NodeRegistrar<AddNode> registrar{"Math", "Add"};
+        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
 
     protected:
         void processInternal() override;

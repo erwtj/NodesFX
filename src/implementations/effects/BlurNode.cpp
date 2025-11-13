@@ -1,5 +1,11 @@
 #include "BlurNode.h"
 
+#ifdef CUDA
+#include <cuda_runtime.h>
+#endif
+#include <../../../imgproc/include/imgproc.h>
+#include <inja.hpp>
+
 using namespace nodes;
 
 BlurNode::BlurNode() : INode() {
@@ -24,39 +30,43 @@ void BlurNode::processInternal() {
     const float r = radius->data();
 
     auto* outputData = new float[width * height * 4];
-    // Simple box blur
-    int kernelSize = static_cast<int>(r) * 2 + 1;
-    for (int y = 0; y < height; y++)
-    {
-        for (int x = 0; x < width; x++)
-        {
-            float rSum = 0.0f, gSum = 0.0f, bSum = 0.0f, aSum = 0.0f;
-            int count = 0;
-            for (int ky = -static_cast<int>(r); ky <= static_cast<int>(r); ky++)
-            {
-                for (int kx = -static_cast<int>(r); kx <= static_cast<int>(r); kx++)
-                {
-                    const int sampleX = x + kx;
-                    const int sampleY = y + ky;
-                    if (sampleX >= 0 && sampleX < width && sampleY >= 0 &&
-                        sampleY < height)
-                    {
-                        const int index = (sampleY * width + sampleX) * 4;
-                        rSum += inputData[index + 0];
-                        gSum += inputData[index + 1];
-                        bSum += inputData[index + 2];
-                        aSum += inputData[index + 3];
-                        count++;
-                    }
-                }
-            }
-            const int outIndex = (y * width + x) * 4;
-            outputData[outIndex + 0] = rSum / static_cast<float>(count);
-            outputData[outIndex + 1] = gSum / static_cast<float>(count);
-            outputData[outIndex + 2] = bSum / static_cast<float>(count);
-            outputData[outIndex + 3] = aSum / static_cast<float>(count);
-        }
-    }
-
+#ifdef CUDA
+    blur_cuda(inputData, width, height, r, outputData);
+#else
+    blur_cpu(inputData, width, height, r, outputData);
+#endif
     outputTex->setData(TexData(outputData, width, height));
+}
+
+std::string BlurNode::generateCode(std::unordered_set<uint64_t> processedNodes) {
+    if (processedNodes.contains(id()))
+        return ""; // Node already processed
+    processedNodes.emplace(id());
+
+    std::string inTexVar = inputTex->codeVar();
+    std::string radiusVar = radius->codeVar();
+    std::string outTexVar = outputTex->codeVar();
+
+    inja::json data;
+    data["inTex"] = inTexVar;
+    data["radius"] = radiusVar;
+    data["outTex"] = outTexVar;
+
+    const char* code = R"(
+float* inData = {{inTex}}.getData();
+int width = {{inTex}}.getWidth();
+int height = {{inTex}}.getHeight();
+
+float* outData = new float[width * height * 4];
+
+#ifdef CUDA
+blur_cuda(inData, width, height, {{radius}}, outData);
+#else
+blur_cpu(inData, width, height, {{radius}}, outData);
+#endif
+
+TexData {{outTex}} = TexData(outData, width, height);
+    )";
+
+    return inja::render(code, data);
 }

@@ -2,8 +2,8 @@
 #define INPUTMAKER_H
 
 #include "imgui.h"
-#include "../../../util/Vec.h"
-#include "../../../util/Color.h"
+#include <Vec.h>
+#include <Color.h>
 
 template<typename T>
 struct InputTraits;

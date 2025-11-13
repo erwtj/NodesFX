@@ -6,6 +6,7 @@
 #include "IHandle.h"
 #include "INode.h"
 
+// TODO: Move implementation to .cpp for smaller header includes (goes for input handle as well)
 namespace generator {
     template <typename T>
     class OutputHandle final : public IDataHandle<T> {
@@ -61,6 +62,15 @@ namespace generator {
             }
 
             return false;
+        }
+
+        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {
+            return _parent->generateCode(processedNodes);
+        }
+
+        std::string codeVar() override {
+            // I got too lazy to properly sanitize names so it's just the handle id fuck it
+            return std::format("var{}", IHandle::id());
         }
 
     private:

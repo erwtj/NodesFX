@@ -22,6 +22,8 @@ public:
         return _nodeId;
     }
 
+    [[nodiscard]] virtual std::string generateCode() = 0;
+
 protected:
     const ax::NodeEditor::NodeId _nodeId;
 };

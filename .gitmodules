@@ -7,3 +7,6 @@
 [submodule "vendored/imgui-node-editor"]
 	path = vendored/imgui-node-editor
 	url = https://github.com/erwtj/imgui-node-editor
+[submodule "vendored/json"]
+	path = vendored/json
+	url = https://github.com/nlohmann/json

@@ -2,8 +2,8 @@
 #define COSNODE_H
 
 #include "../../NodeRegistry.h"
-#include "../../../generator/INode.h"
-#include "../../../generator/InputHandle.h"
+#include "../../../generator/nodes/INode.h"
+#include "../../../generator/nodes/InputHandle.h"
 
 using namespace generator;
 
@@ -15,6 +15,7 @@ namespace nodes {
 
         [[nodiscard]] const char* name() const override { return "Cos"; }
         static inline NodeRegistrar<CosNode> registrar{"Math/Trigonometry", "Cos"};
+        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
 
     protected:
         void processInternal() override;

@@ -1,7 +1,6 @@
 #include "VisualHandle.h"
 
-#include "../../util/TexData.h"
-#include "../../util/Vec.h"
+#include "../../../imgproc/include/TexData.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -32,7 +31,7 @@ void VisualHandle::draw(float nodeWidth) const {
         ed::BeginPin(_pinId, ed::PinKind::Input); // put pin around circle
         ImGui::Dummy(ImVec2(CIRCLE_RADIUS * 3, ImGui::GetTextLineHeight())); // spacing for pin
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-            ImGui::SetTooltip("%s (%s)", _handle->dataTypeName().c_str(), _handle->dataToString().c_str());
+            ImGui::SetTooltip("%s (%s) [%llu]", _handle->dataTypeName().c_str(), _handle->dataToString().c_str(), _handle->version());
         }
         ed::EndPin();
 
@@ -48,7 +47,7 @@ void VisualHandle::draw(float nodeWidth) const {
         ed::BeginPin(_pinId, ed::PinKind::Output); // put pin around circle
         ImGui::Dummy(ImVec2(CIRCLE_RADIUS * 3, ImGui::GetTextLineHeight())); // spacing for pin
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-            ImGui::SetTooltip("%s (%s)", _handle->dataTypeName().c_str(), _handle->dataToString().c_str());
+            ImGui::SetTooltip("%s (%s) [%llu]", _handle->dataTypeName().c_str(), _handle->dataToString().c_str(), _handle->version());
         }
         ed::EndPin();
     }

@@ -3,7 +3,7 @@
 #include <ranges>
 
 #include "imgui_internal.h"
-#include "../generator/InputHandle.h"
+#include "../generator/nodes/InputHandle.h"
 #include "../implementations/NodeRegistry.h"
 #include "../util/TextUtil.h"
 #include "nodes/input/InputNodeRegistry.h"
@@ -332,29 +332,31 @@ void ProjectWindow::tickInspector() {
 void ProjectWindow::updateInspector() {
 }
 
+std::string generatedCode;
 TexData testTexData = {};
 void ProjectWindow::drawInspector() {
     ImGui::SeparatorText("Node Info");
 
-    if (const ed::NodeId hoveredNodeId = ed::GetHoveredNode()) {
-        IVisualNode* node = findNodeById(hoveredNodeId);
-        ImGui::Text("%s Node ID: %d", node->getName(), static_cast<int>(node->getNodeId().Get()));
-        ImGui::Text("Input Handles:");
-        for (const auto& handle : node->getInputHandles()) {
-            ImGui::Text(" - %s (%s)", handle->getName(), handle->getHandle()->dataToString().c_str());
-        }
-        ImGui::Text("Output Handles:");
-        for (const auto& handle : node->getOutputHandles()) {
-            ImGui::Text(" - %s (%s)", handle->getName(), handle->getHandle()->dataToString().c_str());
-        }
-    } else {
-        ImGui::Text("No node selected");
-    }
+    if (ed::GetSelectedObjectCount() == 1) {
+        ax::NodeEditor::NodeId nodeId;
+        if (ed::GetSelectedNodes(&nodeId, 1)) {
+            IVisualNode* node = findNodeById(nodeId);
+            ImGui::Text("%s Node ID: %d", node->getName(), static_cast<int>(node->getNodeId().Get()));
+            ImGui::Text("Input Handles:");
+            for (const auto& handle : node->getInputHandles()) {
+                ImGui::Text(" - %s (%s)", handle->getName(), handle->getHandle()->dataToString().c_str());
+            }
+            ImGui::Text("Output Handles:");
+            for (const auto& handle : node->getOutputHandles()) {
+                ImGui::Text(" - %s (%s)", handle->getName(), handle->getHandle()->dataToString().c_str());
+            }
 
-    ImGui::SeparatorText("Test");
-    ImGui::Button("tooltip test");
-    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-        ImGui::SetTooltip("Hello!");
+            if (ImGui::Button("Generate Code")) {
+                generatedCode = node->generateCode();
+            }
+
+            ImGui::InputTextMultiline("##generated_code", generatedCode._Unchecked_begin(), generatedCode.capacity());
+        }
     }
 }
 

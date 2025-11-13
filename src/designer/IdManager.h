@@ -10,7 +10,7 @@
 // second one is the unique id within that node
 // so find node by shifting right 32 bits
 
-// TODO: Make thread safe if needed
+// TODO: Make thread safe (ts not atomic rn ngl)
 class IdManager {
 public:
     static ax::NodeEditor::NodeId nextNodeId() {

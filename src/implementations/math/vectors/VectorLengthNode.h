@@ -2,10 +2,10 @@
 #define VECTORLENGTHNODE_H
 
 #include "../../NodeRegistry.h"
-#include "../../../generator/INode.h"
-#include "../../../generator/InputHandle.h"
-#include "../../../generator/OutputHandle.h"
-#include "../../../util/Vec.h"
+#include "../../../generator/nodes/INode.h"
+#include "../../../generator/nodes/InputHandle.h"
+#include "../../../generator/nodes/OutputHandle.h"
+#include "../../../../imgproc/include/Vec.h"
 
 namespace nodes {
     template <typename VecType, size_t N>
@@ -27,6 +27,7 @@ namespace nodes {
             N == 3 ? "Length vec3" :
             N == 4 ? "Length vec4" : "Length vecN"
         };
+        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
 
     protected:
         void processInternal() override;

@@ -1,8 +1,9 @@
 #ifndef BLURNODE_H
 #define BLURNODE_H
+
 #include "../NodeRegistry.h"
-#include "../../generator/INode.h"
-#include "../../generator/InputHandle.h"
+#include "../../generator/nodes/INode.h"
+#include "../../generator/nodes/InputHandle.h"
 
 using namespace generator;
 namespace nodes {
@@ -13,6 +14,7 @@ namespace nodes {
 
         [[nodiscard]] const char* name() const override { return "Blur"; }
         static inline NodeRegistrar<BlurNode> registrar{"Effects", "Blur"};
+        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override;
 
     protected:
         void processInternal() override;

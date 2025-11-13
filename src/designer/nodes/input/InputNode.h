@@ -2,8 +2,8 @@
 #define INPUTNODE_H
 
 #include "InputTraits.h"
-#include "../../../generator/OutputHandle.h"
-#include "../../../generator/INode.h"
+#include "../../../generator/nodes/OutputHandle.h"
+#include "../../../generator/nodes/INode.h"
 
 using namespace generator;
 
@@ -18,6 +18,7 @@ public:
     [[nodiscard]] const char* name() const override { return InputTraits<T>::name; }
 
     std::shared_ptr<OutputHandle<T>> output = std::make_shared<OutputHandle<T>>("", this, InputTraits<T>::defaultValue());
+    std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
 protected:
     void processInternal() override {};
 };

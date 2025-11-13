@@ -2,8 +2,8 @@
 #define SAMPLETEXTURENODE_H
 
 #include "../NodeRegistry.h"
-#include "../../generator/INode.h"
-#include "../../generator/OutputHandle.h"
+#include "../../generator/nodes/INode.h"
+#include "../../generator/nodes/OutputHandle.h"
 
 using namespace generator;
 
@@ -15,6 +15,7 @@ namespace nodes {
 
         [[nodiscard]] const char* name() const override { return "Sample Texture"; }
         static inline NodeRegistrar<SampleTextureNode> registrar{"Generate", "Sample Texture"};
+        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
 
     protected:
         void processInternal() override;

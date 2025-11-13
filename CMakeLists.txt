@@ -6,6 +6,14 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
+# Cuda
+add_definitions(-DCUDA) # TODO This enables cuda in code, but could I not just check if the cuda package was found?
+set(CMAKE_CUDA_ARCHITECTURES 75)
+include(CheckLanguage)
+check_language(CUDA)
+enable_language(CUDA)
+find_package(CUDAToolkit)
+
 # sdl
 add_subdirectory(vendored/SDL EXCLUDE_FROM_ALL)
 
@@ -36,15 +44,44 @@ add_library(imgui_node_editor STATIC
 )
 target_link_libraries(imgui_node_editor PRIVATE imgui)
 
+# nlohmann_json
+set(JSON_Install OFF CACHE INTERNAL "")
+add_subdirectory(vendored/json)
+
+# inja
+add_library(inja INTERFACE)
+target_include_directories(inja INTERFACE vendored/inja)
+
+# imgproc lib
+include_directories(imgproc/include)
+add_library(imgproc STATIC
+        imgproc/include/imgproc.h
+
+        # types
+        imgproc/include/Color.h
+        imgproc/include/Vec.h
+        imgproc/include/TexData.h
+
+        # cpu
+        imgproc/cpu/blur_cpu.cpp
+
+        # cuda
+        imgproc/cuda/blur_cuda.cu
+
+        # opencl
+)
+# Add CUDA
+target_link_libraries(imgproc CUDA::cudart CUDA::cuda_driver)
+
 # main executable
 add_executable(${PROJECT_NAME} main.cpp
         # generator
-        src/generator/INode.h
-        src/generator/IDataHandle.h
-        src/generator/IHandle.h
-        src/generator/OutputHandle.h
-        src/generator/InputHandle.h
-        src/generator/ColorTraits.h
+        src/generator/nodes/INode.h
+        src/generator/nodes/IDataHandle.h
+        src/generator/nodes/IHandle.h
+        src/generator/nodes/OutputHandle.h
+        src/generator/nodes/InputHandle.h
+        src/generator/nodes/ColorTraits.h
 
         # implementations
         src/implementations/NodeRegistry.h
@@ -63,10 +100,10 @@ add_executable(${PROJECT_NAME} main.cpp
 
         # util
         src/util/LoadTexture.h
-        src/util/Vec.h
+        imgproc/include/Vec.h
         src/util/TextUtil.h
-        src/util/TexData.h
-        src/util/Color.h
+        imgproc/include/TexData.h
+        imgproc/include/Color.h
 
         # designer
         src/designer/ProjectWindow.cpp
@@ -97,8 +134,12 @@ add_executable(${PROJECT_NAME} main.cpp
         src/implementations/math/trigonometry/TanNode.h
         src/implementations/math/SubtractNode.cpp
         src/implementations/math/SubtractNode.h
+        imgproc/cpu/blur_cpu.cpp
+        imgproc/include/imgproc.h
+        src/designer/rendering/ITextureHandle.h
+        src/designer/rendering/GLTextureHandle.h
 )
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL inja imgproc nlohmann_json::nlohmann_json)
 
 # copy assets
 add_custom_target(copy_assets

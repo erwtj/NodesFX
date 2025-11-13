@@ -8,7 +8,7 @@
 #include "imgui_node_editor_internal.h"
 #include "src/designer/ProjectWindow.h"
 #include "src/designer/nodes/VisualNode.h"
-#include "src/generator/INode.h"
+#include "src/generator/nodes/INode.h"
 #include "src/implementations/math/AddNode.h"
 #include "src/implementations/math/vectors/SplitVectorNode.h"
 
@@ -121,13 +121,6 @@ int main(int, char**)
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     ProjectWindow app{};
-
-    for (auto& cat : NodeRegistry::subcategories()) {
-        std::cout << "Category: " << cat << "\n";
-        for (auto& entry : NodeRegistry::get(cat)) {
-            std::cout << "  - " << entry.name << "\n";
-        }
-    }
 
     // Main loop
     bool done = false;

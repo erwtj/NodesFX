@@ -2,8 +2,8 @@
 #define SINNODE_H
 
 #include "../../NodeRegistry.h"
-#include "../../../generator/INode.h"
-#include "../../../generator/InputHandle.h"
+#include "../../../generator/nodes/INode.h"
+#include "../../../generator/nodes/InputHandle.h"
 
 using namespace generator;
 
@@ -15,6 +15,7 @@ namespace nodes {
 
         [[nodiscard]] const char* name() const override { return "Sin"; }
         static inline NodeRegistrar<SinNode> registrar{"Math/Trigonometry", "Sin"};
+        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
 
     protected:
         void processInternal() override;

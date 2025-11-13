@@ -4,8 +4,8 @@
 #include "imgui.h"
 #include <string>
 
-#include "../util/TexData.h"
-#include "../util/Vec.h"
+#include "../../../imgproc/include/TexData.h"
+#include "Vec.h"
 
 struct Color;
 
