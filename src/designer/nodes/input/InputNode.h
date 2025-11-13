@@ -18,9 +18,9 @@ public:
     [[nodiscard]] const char* name() const override { return InputTraits<T>::name; }
 
     std::shared_ptr<OutputHandle<T>> output = std::make_shared<OutputHandle<T>>("", this, InputTraits<T>::defaultValue());
-    std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
 protected:
     void processInternal() override {};
+    std::string generateCodeInternal() override {return "";}
 };
 
 #endif //INPUTNODE_H

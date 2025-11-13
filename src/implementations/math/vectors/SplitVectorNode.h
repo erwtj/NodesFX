@@ -30,10 +30,10 @@ namespace nodes {
             N == 3 ? "Split vec3" :
             N == 4 ? "Split vec4" : "Split vecN"
         };
-        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
 
     protected:
         void processInternal() override;
+        std::string generateCodeInternal() override;
 
     private:
         std::shared_ptr<InputHandle<VecType>> input =

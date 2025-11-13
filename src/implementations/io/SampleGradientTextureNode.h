@@ -8,17 +8,17 @@
 using namespace generator;
 
 namespace nodes {
-    class SampleTextureNode final : public INode {
+    class SampleGradientTextureNode final : public INode {
     public:
-        explicit SampleTextureNode();
-        ~SampleTextureNode() override = default;
+        explicit SampleGradientTextureNode();
+        ~SampleGradientTextureNode() override = default;
 
-        [[nodiscard]] const char* name() const override { return "Sample Texture"; }
-        static inline NodeRegistrar<SampleTextureNode> registrar{"Generate", "Sample Texture"};
-        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
+        [[nodiscard]] const char* name() const override { return "Sample Gradient Texture"; }
+        static inline NodeRegistrar<SampleGradientTextureNode> registrar{"Generate", "Sample Gradient Texture"};
 
     protected:
         void processInternal() override;
+        std::string generateCodeInternal() override;
 
     private:
         std::shared_ptr<OutputHandle<TexData>> output = std::make_shared<OutputHandle<TexData>>("Sample", this, TexData());

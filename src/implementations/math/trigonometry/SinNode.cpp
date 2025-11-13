@@ -12,3 +12,10 @@ void SinNode::processInternal() {
     const float in = input->data();
     output->setData(std::sin(in));
 }
+
+std::string SinNode::generateCodeInternal() {
+    std::string inVar = input->codeVar();
+    std::string outVar = output->codeVar();
+
+    return std::format("// Sin\nfloat {} = std::sin({});", outVar, inVar);
+}

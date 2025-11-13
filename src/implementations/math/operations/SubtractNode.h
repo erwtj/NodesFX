@@ -1,9 +1,9 @@
 #ifndef SUBTRACTNODE_H
 #define SUBTRACTNODE_H
 
-#include "../NodeRegistry.h"
-#include "../../generator/nodes/INode.h"
-#include "../../generator/nodes/InputHandle.h"
+#include "../../NodeRegistry.h"
+#include "../../../generator/nodes/INode.h"
+#include "../../../generator/nodes/InputHandle.h"
 
 using namespace generator;
 
@@ -14,11 +14,11 @@ namespace nodes {
         ~SubtractNode() override = default;
 
         [[nodiscard]] const char* name() const override { return "Subtract"; }
-        static inline NodeRegistrar<SubtractNode> registrar{"Math", "Subtract"};
-        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
+        static inline NodeRegistrar<SubtractNode> registrar{"Math/Operators", "Subtract"};
 
     protected:
         void processInternal() override;
+        std::string generateCodeInternal() override;
 
     private:
         std::shared_ptr<InputHandle<float>> inputA = std::make_shared<InputHandle<float>>("A", 0.0f);

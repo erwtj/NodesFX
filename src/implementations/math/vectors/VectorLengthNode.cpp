@@ -15,3 +15,11 @@ void nodes::VectorLengthNode<VecType, N>::processInternal() {
     Vec<N> vec = input->data();
     output->setData(vec.length());
 }
+
+template <typename VecType, size_t N>
+std::string nodes::VectorLengthNode<VecType, N>::generateCodeInternal() {
+    std::string inVecVar = input->codeVar();
+    std::string outLengthVar = output->codeVar();
+
+    return std::format("// Vector length\nfloat {} = {}.length();", outLengthVar, inVecVar);
+}

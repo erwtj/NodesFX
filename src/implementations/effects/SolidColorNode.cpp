@@ -1,5 +1,8 @@
 #include "SolidColorNode.h"
 
+#include "imgproc.h"
+#include "inja.hpp"
+
 using namespace nodes;
 
 SolidColorNode::SolidColorNode() : INode() {
@@ -18,17 +21,37 @@ void SolidColorNode::processInternal() {
     int width = std::max(1, static_cast<int>(texSize.x));
     int height = std::max(1, static_cast<int>(texSize.y));
 
-    auto* data = new float [width * height * 4];
-
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            size_t index = (y * width + x) * 4;
-            data[index + 0] = col.r;
-            data[index + 1] = col.g;
-            data[index + 2] = col.b;
-            data[index + 3] = col.a;
-        }
-    }
+    #ifdef CUDA
+        float* data = solid_cuda(width, height, col);
+    #else
+        float* data = solid_cpu(width, height, col);
+    #endif
 
     output->setData(TexData(data, width, height));
+}
+
+std::string SolidColorNode::generateCodeInternal() {
+    std::string sizeVar = size->codeVar();
+    std::string colVar = color->codeVar();
+    std::string outVar = output->codeVar();
+
+    inja::json data;
+    data["size"] = sizeVar;
+    data["col"] = colVar;
+    data["out"] = outVar;
+    data["id"] = std::to_string(id());
+
+    const char* code = R"(
+// Solid
+int width_{{id}} = std::max(1, static_cast<int>({{size}}.x));
+int height_{{id}} = std::max(1, static_cast<int>({{size}}.y));
+#ifdef CUDA
+float* outData_{{id}} = solid_cuda(width_{{id}}, height_{{id}}, {{col}});
+#else
+float* outData_{{id}} = solid_cpu(width_{{id}}, height_{{id}}, {{col}});
+#endif
+TexData {{out}} = TexData(outData_{{id}}, width_{{id}}, height_{{id}});
+    )";
+
+    return inja::render(code, data);
 }

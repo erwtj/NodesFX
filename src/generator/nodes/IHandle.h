@@ -46,7 +46,7 @@ namespace generator {
         }
 
         // Code generation
-        virtual std::string generateCode(std::unordered_set<uint64_t> processedNodes) = 0; // Handles won't generate code, but output handles will pass along to parent nodes and input handles to output handles
+        virtual std::string generateCode(std::unordered_set<uint64_t>& processedNodes) = 0; // Handles won't generate code, but output handles will pass along to parent nodes and input handles to output handles
         virtual std::string codeVar() = 0; // Returns either the variable name to assign to or the constant value
     private:
         static inline std::atomic_uint64_t idCounter = 0;

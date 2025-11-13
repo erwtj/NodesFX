@@ -95,6 +95,6 @@ std::unique_ptr<VisualNode> VisualNode::createFromRegistryEntry(const NodeRegist
 }
 
 std::string VisualNode::generateCode() {
-    const std::unordered_set<uint64_t> nodeIds {};
+    std::unordered_set<uint64_t> nodeIds {};
     return _node->generateCode(nodeIds);
 }

@@ -11,6 +11,7 @@
 // Especially input nodes, which are now a part of the designer
 // InputNode should be moved to generator, and contain internal fields for OpenFX settings
 
+// TODO: Move implemented functions to cpp file
 namespace generator {
     class INode {
     public:
@@ -32,7 +33,22 @@ namespace generator {
 
         // We pass processedNodes along so we don't accidentally re-add a code snippet from an already processed node
         // Handles will give us the var name that the node will populate
-        virtual std::string generateCode(std::unordered_set<uint64_t> processedNodes) = 0;
+        [[nodiscard]] std::string generateCode(std::unordered_set<uint64_t>& processedNodes) {
+            if (processedNodes.contains(_id))
+            {
+                printf("Node already processed! [%llu]", _id);
+                return "";
+            }
+            processedNodes.emplace(_id);
+
+            std::string code;
+            for (const auto& input : _inputHandles) {
+                code += input->generateCode(processedNodes);
+            }
+            code += generateCodeInternal();
+
+            return code;
+        }
 
     protected:
         std::vector<uint64_t> _inputVersions = {};
@@ -41,6 +57,8 @@ namespace generator {
         [[nodiscard]] virtual bool isDirtyInternal() const {
             return false;
         }
+
+        virtual std::string generateCodeInternal() = 0;
 
     private:
         static inline std::atomic_uint64_t idCounter = 0;

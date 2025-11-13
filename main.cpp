@@ -9,7 +9,7 @@
 #include "src/designer/ProjectWindow.h"
 #include "src/designer/nodes/VisualNode.h"
 #include "src/generator/nodes/INode.h"
-#include "src/implementations/math/AddNode.h"
+#include "src/implementations/math/operations/AddNode.h"
 #include "src/implementations/math/vectors/SplitVectorNode.h"
 
 namespace ed = ax::NodeEditor;

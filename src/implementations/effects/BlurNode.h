@@ -14,10 +14,10 @@ namespace nodes {
 
         [[nodiscard]] const char* name() const override { return "Blur"; }
         static inline NodeRegistrar<BlurNode> registrar{"Effects", "Blur"};
-        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override;
 
     protected:
         void processInternal() override;
+        std::string generateCodeInternal() override;
 
     private:
         std::shared_ptr<InputHandle<TexData>> inputTex = std::make_shared<InputHandle<TexData>>("Texture", TexData());

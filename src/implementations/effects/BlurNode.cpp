@@ -3,7 +3,7 @@
 #ifdef CUDA
 #include <cuda_runtime.h>
 #endif
-#include <../../../imgproc/include/imgproc.h>
+#include <imgproc.h>
 #include <inja.hpp>
 
 using namespace nodes;
@@ -38,11 +38,7 @@ void BlurNode::processInternal() {
     outputTex->setData(TexData(outputData, width, height));
 }
 
-std::string BlurNode::generateCode(std::unordered_set<uint64_t> processedNodes) {
-    if (processedNodes.contains(id()))
-        return ""; // Node already processed
-    processedNodes.emplace(id());
-
+std::string BlurNode::generateCodeInternal() {
     std::string inTexVar = inputTex->codeVar();
     std::string radiusVar = radius->codeVar();
     std::string outTexVar = outputTex->codeVar();
@@ -51,21 +47,17 @@ std::string BlurNode::generateCode(std::unordered_set<uint64_t> processedNodes) 
     data["inTex"] = inTexVar;
     data["radius"] = radiusVar;
     data["outTex"] = outTexVar;
+    data["id"] = std::to_string(id()); // Any tmp types need to be tagged for this id to prevent duplicate names
 
     const char* code = R"(
-float* inData = {{inTex}}.getData();
-int width = {{inTex}}.getWidth();
-int height = {{inTex}}.getHeight();
-
-float* outData = new float[width * height * 4];
-
+// Blur
+float* outData_{{id}} = new float[width * height * 4];
 #ifdef CUDA
-blur_cuda(inData, width, height, {{radius}}, outData);
+blur_cuda({{inTex}}.getData(), {{inTex}}.getWidth(), {{inTex}}.getHeight(), {{radius}}, outData_{{id}});
 #else
-blur_cpu(inData, width, height, {{radius}}, outData);
+blur_cpu({{inTex}}.getData(), {{inTex}}.getWidth(), {{inTex}}.getHeight(), {{radius}}, outData_{{id}});
 #endif
-
-TexData {{outTex}} = TexData(outData, width, height);
+TexData {{outTex}} = TexData(outData_{{id}}, {{inTex}}.getWidth(), {{inTex}}.getHeight());
     )";
 
     return inja::render(code, data);

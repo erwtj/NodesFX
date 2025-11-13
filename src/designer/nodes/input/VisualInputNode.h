@@ -6,7 +6,7 @@
 #include "InputNodeRegistry.h"
 #include "../VisualNode.h"
 #include "../../../generator/nodes/OutputHandle.h"
-#include "../../../implementations/math/AddNode.h"
+#include "../../../implementations/math/operations/AddNode.h"
 
 template<typename T>
 class VisualInputNode final : public VisualNode {

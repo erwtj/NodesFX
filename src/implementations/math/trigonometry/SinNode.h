@@ -15,10 +15,10 @@ namespace nodes {
 
         [[nodiscard]] const char* name() const override { return "Sin"; }
         static inline NodeRegistrar<SinNode> registrar{"Math/Trigonometry", "Sin"};
-        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
 
     protected:
         void processInternal() override;
+        std::string generateCodeInternal() override;
 
     private:
         std::shared_ptr<InputHandle<float>> input = std::make_shared<InputHandle<float>>("In", 0.0f);

@@ -64,7 +64,7 @@ namespace generator {
             return false;
         }
 
-        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {
+        std::string generateCode(std::unordered_set<uint64_t>& processedNodes) override {
             return _parent->generateCode(processedNodes);
         }
 

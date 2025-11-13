@@ -13,3 +13,11 @@ void AddNode::processInternal() {
     const float b = inputB->data();
     output->setData(a + b);
 }
+
+std::string AddNode::generateCodeInternal() {
+    std::string aVar = inputA->codeVar();
+    std::string bVar = inputB->codeVar();
+    std::string outVar = output->codeVar();
+
+    return std::format("// Add \nfloat {} = {} + {};", outVar, aVar, bVar);
+}

@@ -27,10 +27,10 @@ namespace nodes {
             N == 3 ? "Length vec3" :
             N == 4 ? "Length vec4" : "Length vecN"
         };
-        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
 
     protected:
         void processInternal() override;
+        std::string generateCodeInternal() override;
 
     private:
         std::shared_ptr<InputHandle<VecType>> input =

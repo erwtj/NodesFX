@@ -64,9 +64,13 @@ add_library(imgproc STATIC
 
         # cpu
         imgproc/cpu/blur_cpu.cpp
+        imgproc/cpu/solid_cpu.cpp
+        imgproc/cpu/sample_gradient_cpu.cpp
 
         # cuda
         imgproc/cuda/blur_cuda.cu
+        imgproc/cuda/solid_cuda.cu
+        imgproc/cuda/sample_gradient_cuda.cu
 
         # opencl
 )
@@ -85,18 +89,16 @@ add_executable(${PROJECT_NAME} main.cpp
 
         # implementations
         src/implementations/NodeRegistry.h
-        src/implementations/math/AddNode.cpp
-        src/implementations/math/AddNode.h
+        src/implementations/math/operations/AddNode.cpp
+        src/implementations/math/operations/AddNode.h
         src/implementations/math/vectors/SplitVectorNode.h
         src/implementations/math/vectors/SplitVectorNode.cpp
         src/implementations/effects/SolidColorNode.cpp
         src/implementations/effects/SolidColorNode.h
         src/implementations/effects/BlurNode.cpp
         src/implementations/effects/BlurNode.h
-        src/implementations/io/SampleTextureNode.cpp
-        src/implementations/io/SampleTextureNode.h
-        src/implementations/io/LoadTextureNode.cpp
-        src/implementations/io/LoadTextureNode.h
+        src/implementations/io/SampleGradientTextureNode.cpp
+        src/implementations/io/SampleGradientTextureNode.h
 
         # util
         src/util/LoadTexture.h
@@ -132,12 +134,18 @@ add_executable(${PROJECT_NAME} main.cpp
         src/implementations/math/trigonometry/CosNode.h
         src/implementations/math/trigonometry/TanNode.cpp
         src/implementations/math/trigonometry/TanNode.h
-        src/implementations/math/SubtractNode.cpp
-        src/implementations/math/SubtractNode.h
+        src/implementations/math/operations/SubtractNode.cpp
+        src/implementations/math/operations/SubtractNode.h
         imgproc/cpu/blur_cpu.cpp
         imgproc/include/imgproc.h
         src/designer/rendering/ITextureHandle.h
         src/designer/rendering/GLTextureHandle.h
+        src/implementations/math/operations/MultiplyNode.cpp
+        src/implementations/math/operations/MultiplyNode.h
+        src/implementations/math/operations/DivideNode.cpp
+        src/implementations/math/operations/DivideNode.h
+        src/implementations/math/operations/PowerNode.cpp
+        src/implementations/math/operations/PowerNode.h
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL inja imgproc nlohmann_json::nlohmann_json)
 

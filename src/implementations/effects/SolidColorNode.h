@@ -14,10 +14,10 @@ namespace nodes {
 
         [[nodiscard]] const char* name() const override { return "Solid Color"; }
         static inline NodeRegistrar<SolidColorNode> registrar{"Generate", "Solid Color"};
-        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {return "";}
 
     protected:
         void processInternal() override;
+        std::string generateCodeInternal() override;
 
     private:
         std::shared_ptr<InputHandle<Color>> color = std::make_shared<InputHandle<Color>>("Color", Color(1.0f, 0.0f, 0.0f, 1.0f));

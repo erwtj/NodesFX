@@ -76,19 +76,19 @@ namespace generator {
             return false;
         }
 
-        std::string generateCode(std::unordered_set<uint64_t> processedNodes) override {
+        std::string generateCode(std::unordered_set<uint64_t>& processedNodes) override {
             if (output)
-                return output->generateCode(processedNodes) + "\n";
+                return output->generateCode(processedNodes) += "\n";
 
-            return "";
+            // TODO: Figure out how to generate constant
+            return std::format("auto {} = some constant;\n", codeVar());
         }
 
         std::string codeVar() override {
             if (output)
                 return output->codeVar(); // Link to output variable field
 
-            // TODO: Load current node value, like 'true' or 'Color(1.0, 0.0, 0.0, 1.0)'
-            return "";
+            return std::format("var{}", IHandle::id());
         }
     private:
         OutputHandle<T>* output = nullptr;

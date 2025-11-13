@@ -1,6 +1,9 @@
 #ifndef COLOR_H
 #define COLOR_H
 #include <stdexcept>
+#include <ostream>
+#include <sstream>
+#include <string>
 
 struct Color {
     float r;
