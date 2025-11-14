@@ -80,12 +80,11 @@ target_link_libraries(imgproc CUDA::cudart CUDA::cuda_driver)
 # main executable
 add_executable(${PROJECT_NAME} main.cpp
         # generator
-        src/generator/nodes/INode.h
-        src/generator/nodes/IDataHandle.h
-        src/generator/nodes/IHandle.h
-        src/generator/nodes/OutputHandle.h
-        src/generator/nodes/InputHandle.h
-        src/generator/nodes/ColorTraits.h
+        src/generator/INode.h
+        src/generator/IDataHandle.h
+        src/generator/IHandle.h
+        src/generator/OutputHandle.h
+        src/generator/InputHandle.h
 
         # implementations
         src/implementations/NodeRegistry.h
@@ -146,6 +145,7 @@ add_executable(${PROJECT_NAME} main.cpp
         src/implementations/math/operations/DivideNode.h
         src/implementations/math/operations/PowerNode.cpp
         src/implementations/math/operations/PowerNode.h
+        src/implementations/TypeTraits.h
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL inja imgproc nlohmann_json::nlohmann_json)
 

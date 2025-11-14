@@ -1,7 +1,7 @@
 #include "VisualNode.h"
 
-#include "../../generator/nodes/InputHandle.h"
-#include "../../generator/nodes/OutputHandle.h"
+#include "../../generator/InputHandle.h"
+#include "../../generator/OutputHandle.h"
 
 #include <imgui_node_editor.h>
 

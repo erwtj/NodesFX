@@ -2,8 +2,8 @@
 #define SINNODE_H
 
 #include "../../NodeRegistry.h"
-#include "../../../generator/nodes/INode.h"
-#include "../../../generator/nodes/InputHandle.h"
+#include "../../../generator/INode.h"
+#include "../../../generator/InputHandle.h"
 
 using namespace generator;
 

@@ -1,9 +1,10 @@
 #ifndef SAMPLETEXTURENODE_H
 #define SAMPLETEXTURENODE_H
 
+#include "TexData.h"
 #include "../NodeRegistry.h"
-#include "../../generator/nodes/INode.h"
-#include "../../generator/nodes/OutputHandle.h"
+#include "../../generator/INode.h"
+#include "../../generator/OutputHandle.h"
 
 using namespace generator;
 

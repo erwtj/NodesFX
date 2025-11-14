@@ -3,7 +3,7 @@
 #include <ranges>
 
 #include "imgui_internal.h"
-#include "../generator/nodes/InputHandle.h"
+#include "../generator/InputHandle.h"
 #include "../implementations/NodeRegistry.h"
 #include "../util/TextUtil.h"
 #include "nodes/input/InputNodeRegistry.h"

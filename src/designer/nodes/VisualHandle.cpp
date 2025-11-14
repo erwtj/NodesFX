@@ -1,5 +1,6 @@
 #include "VisualHandle.h"
 
+#include "Color.h"
 #include "../../../imgproc/include/TexData.h"
 
 namespace ed = ax::NodeEditor;
@@ -26,8 +27,11 @@ void drawHandleCircle(float radius, ImU32 color) {
 }
 
 void VisualHandle::draw(float nodeWidth) const {
+    Color handleColor = _handle->color();
+    ImU32 color = ImGui::ColorConvertFloat4ToU32(ImVec4(handleColor.r, handleColor.g, handleColor.b, handleColor.a));
+
     if (_handle->type() == generator::IHandle::HandleType::Input) {
-        drawHandleCircle(CIRCLE_RADIUS, _handle->color());
+        drawHandleCircle(CIRCLE_RADIUS, color);
         ed::BeginPin(_pinId, ed::PinKind::Input); // put pin around circle
         ImGui::Dummy(ImVec2(CIRCLE_RADIUS * 3, ImGui::GetTextLineHeight())); // spacing for pin
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
@@ -43,7 +47,7 @@ void VisualHandle::draw(float nodeWidth) const {
         ImGui::TextUnformatted(getName());
         ImGui::SameLine();
 
-        drawHandleCircle(CIRCLE_RADIUS, _handle->color());
+        drawHandleCircle(CIRCLE_RADIUS, color);
         ed::BeginPin(_pinId, ed::PinKind::Output); // put pin around circle
         ImGui::Dummy(ImVec2(CIRCLE_RADIUS * 3, ImGui::GetTextLineHeight())); // spacing for pin
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {

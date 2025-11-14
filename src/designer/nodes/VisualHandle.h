@@ -2,7 +2,7 @@
 #define VISUALHANDLE_H
 #include "imgui_node_editor.h"
 #include "../IdManager.h"
-#include "../../generator/nodes/IHandle.h"
+#include "../../generator/IHandle.h"
 
 #define CIRCLE_RADIUS 6.0f
 

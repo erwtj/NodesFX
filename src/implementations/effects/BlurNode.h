@@ -1,9 +1,10 @@
 #ifndef BLURNODE_H
 #define BLURNODE_H
 
+#include "TexData.h"
 #include "../NodeRegistry.h"
-#include "../../generator/nodes/INode.h"
-#include "../../generator/nodes/InputHandle.h"
+#include "../../generator/INode.h"
+#include "../../generator/InputHandle.h"
 
 using namespace generator;
 namespace nodes {

@@ -2,8 +2,8 @@
 #define INPUTNODE_H
 
 #include "InputTraits.h"
-#include "../../../generator/nodes/OutputHandle.h"
-#include "../../../generator/nodes/INode.h"
+#include "../../../generator/OutputHandle.h"
+#include "../../../generator/INode.h"
 
 using namespace generator;
 

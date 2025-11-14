@@ -7,6 +7,15 @@ template <size_t N>
 struct Vec {
     float data[N];
 
+    Vec() : data{} {}
+
+    Vec(std::initializer_list<float> init) : data{} {
+        size_t i = 0;
+        for (float f : init) {
+            if (i < N) data[i++] = f;
+        }
+    }
+
     float& operator[](size_t i) { return data[i]; }
     const float& operator[](size_t i) const { return data[i]; }
 
@@ -60,6 +69,21 @@ struct Vec<2> {
     Vec<2> operator*(float s) const { return {x * s, y * s}; }
     float dot(const Vec<2>& o) const { return x * o.x + y * o.y; }
     float length() const { return std::sqrt(dot(*this)); }
+
+    float &operator[](size_t i) {
+        switch (i) {
+        case 0: return x;
+        case 1: return y;
+        default: throw std::out_of_range("Index out of range for Vec2");
+        }
+    }
+    const float &operator[](size_t i) const {
+        switch (i) {
+        case 0: return x;
+        case 1: return y;
+        default: throw std::out_of_range("Index out of range for Vec2");
+        }
+    }
 };
 
 template <>
@@ -76,6 +100,23 @@ struct Vec<3> {
         return {y * o.z - z * o.y, z * o.x - x * o.z, x * o.y - y * o.x};
     }
     float length() const { return std::sqrt(dot(*this)); }
+
+    float &operator[](size_t i) {
+        switch (i) {
+        case 0: return x;
+        case 1: return y;
+        case 2: return z;
+        default: throw std::out_of_range("Index out of range for Vec3");
+        }
+    }
+    const float &operator[](size_t i) const {
+        switch (i) {
+        case 0: return x;
+        case 1: return y;
+        case 2: return z;
+        default: throw std::out_of_range("Index out of range for Vec3");
+        }
+    }
 };
 
 template <>
@@ -89,6 +130,25 @@ struct Vec<4> {
     Vec<4> operator*(float s) const { return {x * s, y * s, z * s, w * s}; }
     float dot(const Vec<4>& o) const { return x * o.x + y * o.y + z * o.z + w * o.w; }
     float length() const { return std::sqrt(dot(*this)); }
+
+    float &operator[](size_t i) {
+        switch (i) {
+        case 0: return x;
+        case 1: return y;
+        case 2: return z;
+        case 3: return w;
+        default: throw std::out_of_range("Index out of range for Vec4");
+        }
+    }
+    const float &operator[](size_t i) const {
+        switch (i) {
+        case 0: return x;
+        case 1: return y;
+        case 2: return z;
+        case 3: return w;
+        default: throw std::out_of_range("Index out of range for Vec4");
+        }
+    }
 };
 
 using Vec2 = Vec<2>;

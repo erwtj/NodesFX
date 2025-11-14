@@ -3,7 +3,7 @@
 #include "IVisualNode.h"
 #include "imgui_node_editor.h"
 #include "VisualHandle.h"
-#include "../../generator/nodes/INode.h"
+#include "../../generator/INode.h"
 #include "../../implementations/NodeRegistry.h"
 #include "../rendering/GLTextureHandle.h"
 

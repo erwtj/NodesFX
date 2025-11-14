@@ -7,7 +7,7 @@
 #include <atomic>
 #include <unordered_set>
 
-#include "imgui.h"
+#include "Color.h"
 
 namespace generator {
     class IHandle {
@@ -39,7 +39,7 @@ namespace generator {
         virtual bool checkLoop(IHandle* target) = 0;
 
         // TODO: Color trait is a frontend thing really
-        [[nodiscard]] virtual ImU32 color() const = 0;
+        [[nodiscard]] virtual Color color() const = 0;
 
         virtual explicit operator std::string() const {
             return _name;

@@ -51,7 +51,7 @@ std::string BlurNode::generateCodeInternal() {
 
     const char* code = R"(
 // Blur
-float* outData_{{id}} = new float[width * height * 4];
+float* outData_{{id}} = new float[{{inTex}}.getWidth() * {{inTex}}.getHeight() * 4];
 #ifdef CUDA
 blur_cuda({{inTex}}.getData(), {{inTex}}.getWidth(), {{inTex}}.getHeight(), {{radius}}, outData_{{id}});
 #else

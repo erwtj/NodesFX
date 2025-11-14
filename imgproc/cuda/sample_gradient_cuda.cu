@@ -28,6 +28,8 @@ __global__ void SampleGradientKernel(const int width, const int height, float* o
     }
 }
 
+// TODO: Maybe figure out some way to instantly copy this into TexData
+// We are already doing memory copies and stuff and we know the new width and height so why not?
 float* sample_gradient_cuda(const int width, const int height)
 {
     float *d_output;

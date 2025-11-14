@@ -2,9 +2,9 @@
 #define VECTORLENGTHNODE_H
 
 #include "../../NodeRegistry.h"
-#include "../../../generator/nodes/INode.h"
-#include "../../../generator/nodes/InputHandle.h"
-#include "../../../generator/nodes/OutputHandle.h"
+#include "../../../generator/INode.h"
+#include "../../../generator/InputHandle.h"
+#include "../../../generator/OutputHandle.h"
 #include "../../../../imgproc/include/Vec.h"
 
 namespace nodes {

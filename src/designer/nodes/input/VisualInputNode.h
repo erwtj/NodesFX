@@ -5,7 +5,7 @@
 #include "InputNode.h"
 #include "InputNodeRegistry.h"
 #include "../VisualNode.h"
-#include "../../../generator/nodes/OutputHandle.h"
+#include "../../../generator/OutputHandle.h"
 #include "../../../implementations/math/operations/AddNode.h"
 
 template<typename T>

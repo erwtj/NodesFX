@@ -8,7 +8,7 @@
 #include <vector>
 #include <sstream>
 
-#include "../generator/nodes/INode.h"
+#include "../generator/INode.h"
 
 using namespace generator;
 

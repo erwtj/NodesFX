@@ -5,10 +5,11 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
 
+#include "imgproc.h"
 #include "imgui_node_editor_internal.h"
 #include "src/designer/ProjectWindow.h"
 #include "src/designer/nodes/VisualNode.h"
-#include "src/generator/nodes/INode.h"
+#include "src/generator/INode.h"
 #include "src/implementations/math/operations/AddNode.h"
 #include "src/implementations/math/vectors/SplitVectorNode.h"
 
@@ -115,7 +116,6 @@ int main(int, char**)
     // Load Fonts
     printf("Current path: %s\n", SDL_GetBasePath());
     io.Fonts->AddFontFromFileTTF("./assets/fonts/Roboto-Medium.ttf");
-
 
     // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);

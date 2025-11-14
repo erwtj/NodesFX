@@ -1,9 +1,11 @@
 #ifndef SOLIDCOLORNODE_H
 #define SOLIDCOLORNODE_H
 
+#include "TexData.h"
+#include "Vec.h"
 #include "../NodeRegistry.h"
-#include "../../generator/nodes/INode.h"
-#include "../../generator/nodes/InputHandle.h"
+#include "../../generator/INode.h"
+#include "../../generator/InputHandle.h"
 #include "../../../imgproc/include/Color.h"
 
 namespace nodes {
