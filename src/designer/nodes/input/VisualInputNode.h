@@ -11,17 +11,17 @@
 template<typename T>
 class VisualInputNode final : public VisualNode {
 public:
-    VisualInputNode() : VisualNode(std::make_unique<InputNode<T>>()), label("##" + std::to_string(static_cast<uint64_t>(_nodeId))) {
+    VisualInputNode() : VisualNode(std::make_unique<InputNode<T>>()), label(std::format("##{}", static_cast<uint64_t>(_nodeId))) {
         _outputHandle = std::dynamic_pointer_cast<OutputHandle<T>>(_node->_outputHandles[0]);
     }
 
-    static inline InputNodeRegistrar<VisualInputNode<T>> registrar{InputTraits<T>::name};
+    static inline InputNodeRegistrar<VisualInputNode<T>> registrar{TypeTraits<T>::displayName};
 
     void draw() override {
         namespace ed = ax::NodeEditor;
         ed::BeginNode(_nodeId);
 
-        ImGui::Text("%s", InputTraits<T>::name);
+        ImGui::Text(TypeTraits<T>::displayName);
 
         float handleSizeOffset = CIRCLE_RADIUS * 6;
         float totalWidth = std::max(ImGui::CalcTextSize(_outputHandle->name()).x, InputTraits<T>::width) + handleSizeOffset + 20.0f;

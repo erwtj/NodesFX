@@ -15,12 +15,18 @@ public:
     explicit InputNode() : INode() { _outputHandles.push_back(output); }
     ~InputNode() override = default;
 
-    [[nodiscard]] const char* name() const override { return InputTraits<T>::name; }
+    [[nodiscard]] const char* name() const override { return TypeTraits<T>::displayName; }
 
     std::shared_ptr<OutputHandle<T>> output = std::make_shared<OutputHandle<T>>("", this, InputTraits<T>::defaultValue());
 protected:
     void processInternal() override {};
-    std::string generateCodeInternal() override {return "";}
+    std::string generateCodeInternal() override {
+        return std::format("{} {} = {};",
+            TypeTraits<T>::codeName,
+            output->codeVar(),
+            TypeTraits<T>::toInitCode(output->data())
+        );
+    }
 };
 
 #endif //INPUTNODE_H

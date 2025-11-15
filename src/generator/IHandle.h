@@ -25,7 +25,7 @@ namespace generator {
         [[nodiscard]] uint64_t id() const { return _id; }
 
         [[nodiscard]] virtual const std::type_info& dataType() const = 0;
-        [[nodiscard]] virtual const std::string dataTypeName() const = 0;
+        [[nodiscard]] virtual const char* dataTypeName() const = 0;
         [[nodiscard]] virtual const std::string dataToString() const = 0;
 
         [[nodiscard]] virtual uint64_t version() = 0;

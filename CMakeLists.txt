@@ -146,6 +146,7 @@ add_executable(${PROJECT_NAME} main.cpp
         src/implementations/math/operations/PowerNode.cpp
         src/implementations/math/operations/PowerNode.h
         src/implementations/TypeTraits.h
+        src/designer/Project.h
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL inja imgproc nlohmann_json::nlohmann_json)
 

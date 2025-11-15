@@ -5,13 +5,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
 
-#include "imgproc.h"
-#include "imgui_node_editor_internal.h"
-#include "src/designer/ProjectWindow.h"
-#include "src/designer/nodes/VisualNode.h"
-#include "src/generator/INode.h"
-#include "src/implementations/math/operations/AddNode.h"
-#include "src/implementations/math/vectors/SplitVectorNode.h"
+#include "src/designer/App.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -118,9 +112,9 @@ int main(int, char**)
     io.Fonts->AddFontFromFileTTF("./assets/fonts/Roboto-Medium.ttf");
 
     // Our state
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.00f);
 
-    ProjectWindow app{};
+    App app{};
 
     // Main loop
     bool done = false;
@@ -145,15 +139,16 @@ int main(int, char**)
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL3_NewFrame();
 
-
+        ImGui::NewFrame();
         app.tick();
-
-        // Rendering
         ImGui::Render();
+
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
         glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
+
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         SDL_GL_SwapWindow(window);
     }
 

@@ -1,16 +1,21 @@
 #ifndef PROJECTWINDOW_H
 #define PROJECTWINDOW_H
 
+#include "Project.h"
+
 #include "../implementations/NodeRegistry.h"
 #include "nodes/LinkInfo.h"
 #include "nodes/VisualNode.h"
+#include <unordered_map>
 
 class ProjectWindow {
 public:
-    ProjectWindow();
+    explicit ProjectWindow(ProjectInfo info);
     ~ProjectWindow() = default;
 
-    void tick();
+    const ProjectInfo& info() const { return _info; }
+
+    void tick(ImVec2 pos, ImVec2 size);
 
     void createNode(const NodeRegistry::Entry& entry, const ImVec2& position = ImVec2(0, 0));
     void addNode(std::unique_ptr<IVisualNode> node, const ImVec2& position = ImVec2(0, 0));
@@ -18,12 +23,15 @@ public:
     void deleteNode(const ax::NodeEditor::NodeId& nodeId);
     void deleteLink(const LinkInfo& link);
 private:
+    std::string _settingsFile;
+    const ProjectInfo _info;
+
     bool _firstTime = true;
     bool _openNewNodePopup = false;
     ax::NodeEditor::EditorContext *_editorContext = nullptr;
 
-    std::unordered_map<ax::NodeEditor::NodeId, std::unique_ptr<IVisualNode>> _nodes = {};
-    std::unordered_map<ax::NodeEditor::LinkId, LinkInfo> _links = {};
+    std::unordered_map<ax::NodeEditor::NodeId, std::unique_ptr<IVisualNode>> _nodes {};
+    std::unordered_map<ax::NodeEditor::LinkId, LinkInfo> _links {};
 
     [[nodiscard]] bool isLinkValid(ax::NodeEditor::PinId inputPinId, ax::NodeEditor::PinId outputPinId);
 

@@ -80,8 +80,7 @@ namespace generator {
             if (output)
                 return output->generateCode(processedNodes) += "\n";
 
-            // TODO: Figure out how to generate constant
-            return std::format("auto {} = {};\n", codeVar(), TypeTraits<T>::toCode(data()));
+            return std::format("{} {} = {};\n", TypeTraits<T>::codeName, codeVar(), TypeTraits<T>::toInitCode(data()));
         }
 
         std::string codeVar() override {

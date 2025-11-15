@@ -1,6 +1,7 @@
 #include "ProjectWindow.h"
 #include <imgui_node_editor.h>
 #include <ranges>
+#include <utility>
 
 #include "imgui_internal.h"
 #include "../generator/InputHandle.h"
@@ -10,9 +11,10 @@
 
 namespace ed = ax::NodeEditor;
 
-ProjectWindow::ProjectWindow() {
+ProjectWindow::ProjectWindow(ProjectInfo info) : _info(std::move(info)) {
+    _settingsFile = std::format("project-{}.json", info.id); // Stored so c_str later doesn't get deleted when string moves out of scope
     ed::Config config;
-    config.SettingsFile = "project1.json";
+    config.SettingsFile = _settingsFile.c_str();
     _editorContext = ed::CreateEditor(&config);
 }
 
@@ -172,10 +174,7 @@ void ProjectWindow::drawNodePopup() {
 }
 
 
-void ProjectWindow::tick() {
-    // Start
-    ImGui::NewFrame();
-
+void ProjectWindow::tick(ImVec2 pos, ImVec2 size) {
     ed::SetCurrentEditor(_editorContext);
 
     if (_openNewNodePopup) {
@@ -187,20 +186,13 @@ void ProjectWindow::tick() {
         _openNewNodePopup = false;
     }
 
-    // Get main viewport (to know the window’s screen space)
-    ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-    // Define total area and split ratio
-    const float total_width = viewport->Size.x;
-    const float total_height = viewport->Size.y;
-
     const float split_ratio = 0.7f;
-    const float left_width = total_width * split_ratio;
-    const float right_width = total_width - left_width;
+    const float left_width = size.x * split_ratio;
+    const float right_width = size.x - left_width;
 
     // === LEFT WINDOW ===
-    ImGui::SetNextWindowPos(viewport->Pos);
-    ImGui::SetNextWindowSize(ImVec2(left_width, total_height));
+    ImGui::SetNextWindowPos(pos);
+    ImGui::SetNextWindowSize(ImVec2(left_width, size.y));
 
     ImGui::Begin("Editor", nullptr,
         ImGuiWindowFlags_NoCollapse |
@@ -212,8 +204,8 @@ void ProjectWindow::tick() {
     ImGui::End();
 
     // === RIGHT WINDOW ===
-    ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + left_width, viewport->Pos.y));
-    ImGui::SetNextWindowSize(ImVec2(right_width, total_height));
+    ImGui::SetNextWindowPos(ImVec2(pos.x + left_width, pos.y));
+    ImGui::SetNextWindowSize(ImVec2(right_width, size.y));
 
     ImGui::Begin("Inspector", nullptr,
         ImGuiWindowFlags_NoCollapse |
@@ -226,7 +218,6 @@ void ProjectWindow::tick() {
 
     // End
     ed::SetCurrentEditor(nullptr);
-    ImGui::Render();
 }
 
 void ProjectWindow::tickEditor() {
