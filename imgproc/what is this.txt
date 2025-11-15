@@ -1,0 +1,9 @@
+Processors is a directory containing the processing files
+
+These are separate from src since they will get bundled into a static lib separate from the main app code
+Both the main app and the projects generated with it rely on this code
+
+This way you only have to write your blur implementations once, (so they will be shared across the OpenFX plugin and this app)
+
+This is mainly for image processors since they might use multiple files and more complex logic
+But technically nothing limits the inclusion of something like an AddProcessor, although that just seems really dumb to put here

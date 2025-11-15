@@ -5,12 +5,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
 
-#include <imgui_node_editor.h>
-
-#include "imgui_node_editor_internal.h"
-#include "src/generator/nodes/InputHandle.h"
-#include "src/generator/nodes/Node.h"
-#include "src/generator/nodes/implementations/AddNode.h"
+#include "src/designer/App.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -116,13 +111,10 @@ int main(int, char**)
     printf("Current path: %s\n", SDL_GetBasePath());
     io.Fonts->AddFontFromFileTTF("./assets/fonts/Roboto-Medium.ttf");
 
-    // Editor settings
-    ed::Config config;
-    config.SettingsFile = "Simple.json";
-    ax::NodeEditor::EditorContext* edContext = ed::CreateEditor(&config);
-
     // Our state
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.00f);
+
+    App app{};
 
     // Main loop
     bool done = false;
@@ -143,43 +135,20 @@ int main(int, char**)
             continue;
         }
 
-        // Start the Dear ImGui frame
+        // The idea is that anything backend specific is done here, app only knows about ImGui
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL3_NewFrame();
+
         ImGui::NewFrame();
-
-        {
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-            ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
-
-            ImGui::Separator();
-
-            ed::SetCurrentEditor(edContext);
-            ed::Begin("My Editor", ImVec2(0.0, 0.0f));
-            int uniqueId = 1;
-            // Start drawing nodes.
-            ed::BeginNode(uniqueId++);
-            ImGui::Text("Node A");
-            ed::BeginPin(uniqueId++, ed::PinKind::Input);
-            ImGui::Text("-> In");
-            ed::EndPin();
-            ImGui::SameLine();
-            ed::BeginPin(uniqueId++, ed::PinKind::Output);
-            ImGui::Text("Out ->");
-            ed::EndPin();
-            ed::EndNode();
-            ed::End();
-            ed::SetCurrentEditor(nullptr);
-
-            ImGui::End();
-        }
-
-        // Rendering
+        app.tick();
         ImGui::Render();
+
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
         glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
+
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         SDL_GL_SwapWindow(window);
     }
 

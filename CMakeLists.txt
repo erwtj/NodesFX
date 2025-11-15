@@ -6,6 +6,14 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
+# Cuda
+add_definitions(-DCUDA) # TODO This enables cuda in code, but could I not just check if the cuda package was found?
+set(CMAKE_CUDA_ARCHITECTURES 75)
+include(CheckLanguage)
+check_language(CUDA)
+enable_language(CUDA)
+find_package(CUDAToolkit)
+
 # sdl
 add_subdirectory(vendored/SDL EXCLUDE_FROM_ALL)
 
@@ -36,18 +44,111 @@ add_library(imgui_node_editor STATIC
 )
 target_link_libraries(imgui_node_editor PRIVATE imgui)
 
+# nlohmann_json
+set(JSON_Install OFF CACHE INTERNAL "")
+add_subdirectory(vendored/json)
+
+# inja
+add_library(inja INTERFACE)
+target_include_directories(inja INTERFACE vendored/inja)
+
+# imgproc lib
+include_directories(imgproc/include)
+add_library(imgproc STATIC
+        imgproc/include/imgproc.h
+
+        # types
+        imgproc/include/Color.h
+        imgproc/include/Vec.h
+        imgproc/include/TexData.h
+
+        # cpu
+        imgproc/cpu/blur_cpu.cpp
+        imgproc/cpu/solid_cpu.cpp
+        imgproc/cpu/sample_gradient_cpu.cpp
+
+        # cuda
+        imgproc/cuda/blur_cuda.cu
+        imgproc/cuda/solid_cuda.cu
+        imgproc/cuda/sample_gradient_cuda.cu
+
+        # opencl
+)
+# Add CUDA
+target_link_libraries(imgproc CUDA::cudart CUDA::cuda_driver)
+
 # main executable
 add_executable(${PROJECT_NAME} main.cpp
-        src/generator/nodes/Node.h
-        src/generator/nodes/IDataHandle.h
-        src/generator/nodes/implementations/AddNode.cpp
-        src/generator/nodes/implementations/AddNode.h
-        src/designer/nodes/Categories.h
-        src/generator/nodes/IHandle.h
-        src/generator/nodes/OutputHandle.h
-        src/generator/nodes/InputHandle.h
+        # generator
+        src/generator/INode.h
+        src/generator/IDataHandle.h
+        src/generator/IHandle.h
+        src/generator/OutputHandle.h
+        src/generator/InputHandle.h
+
+        # implementations
+        src/implementations/NodeRegistry.h
+        src/implementations/math/operations/AddNode.cpp
+        src/implementations/math/operations/AddNode.h
+        src/implementations/math/vectors/SplitVectorNode.h
+        src/implementations/math/vectors/SplitVectorNode.cpp
+        src/implementations/effects/SolidColorNode.cpp
+        src/implementations/effects/SolidColorNode.h
+        src/implementations/effects/BlurNode.cpp
+        src/implementations/effects/BlurNode.h
+        src/implementations/io/SampleGradientTextureNode.cpp
+        src/implementations/io/SampleGradientTextureNode.h
+
+        # util
+        src/util/LoadTexture.h
+        imgproc/include/Vec.h
+        src/util/TextUtil.h
+        imgproc/include/TexData.h
+        imgproc/include/Color.h
+
+        # designer
+        src/designer/ProjectWindow.cpp
+        src/designer/ProjectWindow.h
+        src/designer/IdManager.h
+        src/designer/nodes/LinkInfo.h
+        src/designer/App.cpp
+        src/designer/App.h
+            # designer/nodes
+            src/designer/nodes/IVisualNode.h
+            src/designer/nodes/VisualNode.h
+            src/designer/nodes/VisualNode.cpp
+            src/designer/nodes/VisualHandle.cpp
+            src/designer/nodes/VisualHandle.h
+                # designer/nodes/input
+                src/designer/nodes/input/InputNodeRegistry.h
+                src/designer/nodes/input/InputTraits.h
+                src/designer/nodes/input/InputNode.h
+                src/designer/nodes/input/VisualInputNode.h
+                src/designer/nodes/input/VisualInputNode.cpp
+        src/implementations/math/vectors/VectorLengthNode.cpp
+        src/implementations/math/vectors/VectorLengthNode.h
+        src/implementations/math/trigonometry/SinNode.cpp
+        src/implementations/math/trigonometry/SinNode.h
+        src/implementations/math/trigonometry/CosNode.cpp
+        src/implementations/math/trigonometry/CosNode.h
+        src/implementations/math/trigonometry/TanNode.cpp
+        src/implementations/math/trigonometry/TanNode.h
+        src/implementations/math/operations/SubtractNode.cpp
+        src/implementations/math/operations/SubtractNode.h
+        imgproc/cpu/blur_cpu.cpp
+        imgproc/include/imgproc.h
+        src/designer/rendering/ITextureHandle.h
+        src/designer/rendering/GLTextureHandle.h
+        src/implementations/math/operations/MultiplyNode.cpp
+        src/implementations/math/operations/MultiplyNode.h
+        src/implementations/math/operations/DivideNode.cpp
+        src/implementations/math/operations/DivideNode.h
+        src/implementations/math/operations/PowerNode.cpp
+        src/implementations/math/operations/PowerNode.h
+        src/implementations/TypeTraits.h
+        src/designer/Project.h
 )
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL)
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 imgui imgui_node_editor OpenGL::GL inja imgproc nlohmann_json::nlohmann_json)
 
 # copy assets
 add_custom_target(copy_assets
